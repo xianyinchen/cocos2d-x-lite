@@ -746,20 +746,8 @@ void AssetsManagerEx::parseVersion()
         }
         else
         {
-            _updateState = State::NEED_UPDATE;
-
-            // Wait to update so continue the process
-            if (_updateEntry == UpdateEntry::DO_UPDATE)
-            {
-                // dispatch after checking update entry because event dispatching may modify the update entry
-                dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
-                _updateState = State::PREDOWNLOAD_MANIFEST;
-                downloadManifest();
-            }
-            else
-            {
-                dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
-            }
+            _updateState = State::PREDOWNLOAD_MANIFEST;
+            downloadManifest();
         }
     }
 }
@@ -810,12 +798,17 @@ void AssetsManagerEx::parseManifest()
         else
         {
             _updateState = State::NEED_UPDATE;
-            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
-
+            
             if (_updateEntry == UpdateEntry::DO_UPDATE)
             {
                 startUpdate();
             }
+            else if (_updateEntry == UpdateEntry::CHECK_UPDATE)
+            {
+                prepareUpdate();
+            }
+            
+            dispatchUpdateEvent(EventAssetsManagerEx::EventCode::NEW_VERSION_FOUND);
         }
     }
 }
@@ -842,6 +835,16 @@ void AssetsManagerEx::prepareUpdate()
         _tempManifest->genResumeAssetsList(&_downloadUnits);
         _totalWaitToDownload = _totalToDownload = (int)_downloadUnits.size();
         _downloadResumed = true;
+
+        // Collect total size
+        for(auto iter : _downloadUnits)
+        {
+            const DownloadUnit& unit = iter.second;
+            if (unit.size > 0)
+            {
+                _totalSize += unit.size;
+            }
+        }
     }
     else
     {
@@ -890,6 +893,7 @@ void AssetsManagerEx::prepareUpdate()
                     unit.size = diff.asset.size;
                     _downloadUnits.emplace(unit.customId, unit);
                     _tempManifest->setAssetDownloadState(it->first, Manifest::DownloadState::UNSTARTED);
+                    _totalSize += unit.size;
                 }
             }
             // Start updating the temp manifest
@@ -911,6 +915,7 @@ void AssetsManagerEx::startUpdate()
     }
     if (_updateState == State::READY_TO_UPDATE)
     {
+        _totalSize = 0;
         _updateState = State::UPDATING;
         std::string msg;
         if (_downloadResumed)
@@ -1098,6 +1103,7 @@ void AssetsManagerEx::update()
         }
             break;
         case State::FAIL_TO_UPDATE:
+        case State::READY_TO_UPDATE:
         case State::NEED_UPDATE:
         {
             // Manifest not loaded yet
@@ -1106,7 +1112,7 @@ void AssetsManagerEx::update()
                 _updateState = State::PREDOWNLOAD_MANIFEST;
                 downloadManifest();
             }
-            else
+            else if (_updateEntry == UpdateEntry::DO_UPDATE)
             {
                 startUpdate();
             }
