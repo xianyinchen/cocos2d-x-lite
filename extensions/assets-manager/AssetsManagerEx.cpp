@@ -885,7 +885,7 @@ void AssetsManagerEx::prepareUpdate()
                     std::string path = diff.asset.path;
                     DownloadUnit unit;
                     unit.customId = it->first;
-                    unit.srcUrl = packageUrl + path;
+                    unit.srcUrl = packageUrl + path + "?md5=" + diff.asset.md5;
                     unit.storagePath = _tempStoragePath + path;
                     unit.size = diff.asset.size;
                     _downloadUnits.emplace(unit.customId, unit);
