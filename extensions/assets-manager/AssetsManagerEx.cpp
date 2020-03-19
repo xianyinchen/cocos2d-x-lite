@@ -877,8 +877,8 @@ void AssetsManagerEx::prepareUpdate()
                 Manifest::AssetDiff diff = it->second;
                 if (diff.type == Manifest::DiffType::DELETED)
                 {
-                    std::string exsitedPath = _storagePath + diff.asset.path;
-                    _fileUtils->removeFile(exsitedPath);
+                    // std::string exsitedPath = _storagePath + diff.asset.path;
+                    // _fileUtils->removeFile(exsitedPath);
                 }
                 else
                 {
@@ -929,12 +929,20 @@ void AssetsManagerEx::startUpdate()
 void AssetsManagerEx::updateSucceed()
 {
     // Set temp manifest's updating
-    _tempManifest->setUpdating(false);
+    if (_tempManifest != nullptr) {
+        _tempManifest->setUpdating(false);
+    }
 
     // Every thing is correctly downloaded, do the following
     // 1. rename temporary manifest to valid manifest
-    _fileUtils->renameFile(_tempStoragePath, TEMP_MANIFEST_FILENAME, MANIFEST_FILENAME);
-    // 2. merge temporary storage path to storage path so that temporary version turns to cached version
+    if (_fileUtils->isFileExist(_tempManifestPath)) {
+        _fileUtils->renameFile(_tempStoragePath, TEMP_MANIFEST_FILENAME, MANIFEST_FILENAME);
+    }
+
+    // 2. Get the delete files
+    std::unordered_map<std::string, Manifest::AssetDiff> diff_map = _localManifest->genDiff(_remoteManifest);
+
+    // 3. merge temporary storage path to storage path so that temporary version turns to cached version
     if (_fileUtils->isDirectoryExist(_tempStoragePath))
     {
         // Merging all files in temp storage path to storage path
@@ -960,21 +968,40 @@ void AssetsManagerEx::updateSucceed()
                 }
                 _fileUtils->renameFile(*it, dstPath);
             }
+
+            // Remove from delete list for safe, although this is not the case in general.
+            auto diff_itr = diff_map.find(dstPath);
+            if (diff_itr != diff_map.end()) {
+                diff_map.erase(diff_itr);
+            }
         }
-        // Remove temp storage path
-        _fileUtils->removeDirectory(_tempStoragePath);
+
+        // Preprocessing local files in previous version and creating download folders
+        for (auto it = diff_map.begin(); it != diff_map.end(); ++it)
+        {
+            Manifest::AssetDiff diff = it->second;
+            if (diff.type == Manifest::DiffType::DELETED)
+            {
+                // TODO: Do this when download finish, it don’t matter delete or not.
+                std::string exsitedPath = _storagePath + diff.asset.path;
+                _fileUtils->removeFile(exsitedPath);
+            }
+        }
     }
-    // 3. swap the localManifest
+
+    // 4. swap the localManifest
     CC_SAFE_RELEASE(_localManifest);
     _localManifest = _remoteManifest;
     _localManifest->setManifestRoot(_storagePath);
     _remoteManifest = nullptr;
-    // 4. make local manifest take effect
+    // 5. make local manifest take effect
     prepareLocalManifest();
-    // 5. Set update state
+    // 6. Set update state
     _updateState = State::UP_TO_DATE;
-    // 6. Notify finished event
+    // 7. Notify finished event
     dispatchUpdateEvent(EventAssetsManagerEx::EventCode::UPDATE_FINISHED);
+    // 8. Remove temp storage path
+    _fileUtils->removeDirectory(_tempStoragePath);
 }
 
 void AssetsManagerEx::checkUpdate()
@@ -1366,12 +1393,12 @@ void AssetsManagerEx::queueDowload()
 
 void AssetsManagerEx::onDownloadUnitsFinished()
 {
+    // Always save current download manifest information for resuming
+    _tempManifest->saveToFile(_tempManifestPath);
+    
     // Finished with error check
     if (_failedUnits.size() > 0)
     {
-        // Save current download manifest information for resuming
-        _tempManifest->saveToFile(_tempManifestPath);
-
         _updateState = State::FAIL_TO_UPDATE;
         dispatchUpdateEvent(EventAssetsManagerEx::EventCode::UPDATE_FAILED);
     }
