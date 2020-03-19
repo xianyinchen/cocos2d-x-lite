@@ -523,6 +523,16 @@ str
 },
 
 /**
+ * @method checkFinish
+ * @param {String} arg0
+ */
+checkFinish : function (
+str 
+)
+{
+},
+
+/**
  * @method AssetsManagerEx
  * @constructor
 * @param {String|String} str

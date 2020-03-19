@@ -68,5 +68,6 @@ SE_DECLARE_FUNC(js_extension_AssetsManagerEx_prepareUpdate);
 SE_DECLARE_FUNC(js_extension_AssetsManagerEx_downloadFailedAssets);
 SE_DECLARE_FUNC(js_extension_AssetsManagerEx_isResuming);
 SE_DECLARE_FUNC(js_extension_AssetsManagerEx_create);
+SE_DECLARE_FUNC(js_extension_AssetsManagerEx_checkFinish);
 SE_DECLARE_FUNC(js_extension_AssetsManagerEx_AssetsManagerEx);
 

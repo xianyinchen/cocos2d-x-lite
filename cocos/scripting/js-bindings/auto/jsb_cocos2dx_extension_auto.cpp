@@ -1103,6 +1103,23 @@ static bool js_extension_AssetsManagerEx_create(se::State& s)
 }
 SE_BIND_FUNC(js_extension_AssetsManagerEx_create)
 
+static bool js_extension_AssetsManagerEx_checkFinish(se::State& s)
+{
+    const auto& args = s.args();
+    size_t argc = args.size();
+    CC_UNUSED bool ok = true;
+    if (argc == 1) {
+        std::string arg0;
+        ok &= seval_to_std_string(args[0], &arg0);
+        SE_PRECONDITION2(ok, false, "js_extension_AssetsManagerEx_checkFinish : Error processing arguments");
+        cocos2d::extension::AssetsManagerEx::checkFinish(arg0);
+        return true;
+    }
+    SE_REPORT_ERROR("wrong number of arguments: %d, was expecting %d", (int)argc, 1);
+    return false;
+}
+SE_BIND_FUNC(js_extension_AssetsManagerEx_checkFinish)
+
 SE_DECLARE_FINALIZE_FUNC(js_cocos2d_extension_AssetsManagerEx_finalize)
 
 static bool js_extension_AssetsManagerEx_constructor(se::State& s)
@@ -1215,6 +1232,7 @@ bool js_register_extension_AssetsManagerEx(se::Object* obj)
     cls->defineFunction("downloadFailedAssets", _SE(js_extension_AssetsManagerEx_downloadFailedAssets));
     cls->defineFunction("isResuming", _SE(js_extension_AssetsManagerEx_isResuming));
     cls->defineStaticFunction("create", _SE(js_extension_AssetsManagerEx_create));
+    cls->defineStaticFunction("checkFinish", _SE(js_extension_AssetsManagerEx_checkFinish));
     cls->defineFinalizeFunction(_SE(js_cocos2d_extension_AssetsManagerEx_finalize));
     cls->install();
     JSBClassType::registerClass<cocos2d::extension::AssetsManagerEx>(cls);
