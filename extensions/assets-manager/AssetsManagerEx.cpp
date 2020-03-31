@@ -819,18 +819,6 @@ void AssetsManagerEx::parseVersion()
         }
         else
         {
-
-            // Remove _tempStoragePath when the temporary version no equal to the new version found.
-            // this is the safest.
-            if (_tempManifest != nullptr
-                && _tempManifest->isLoaded()
-                && _remoteManifest->versionGreater(_tempManifest, _versionCompareHandle)) {
-                _fileUtils->removeDirectory(_tempStoragePath);
-                _fileUtils->createDirectory(_tempStoragePath);
-                _remoteManifest->saveToFile(_tempVersionPath);
-                _tempManifest->clear();
-            }
-            
             _updateState = State::PREDOWNLOAD_MANIFEST;
             downloadManifest();
         }
