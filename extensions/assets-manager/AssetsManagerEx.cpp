@@ -951,12 +951,7 @@ void AssetsManagerEx::prepareUpdate()
             for (auto it = diff_map.begin(); it != diff_map.end(); ++it)
             {
                 Manifest::AssetDiff diff = it->second;
-                if (diff.type == Manifest::DiffType::DELETED)
-                {
-                    // std::string exsitedPath = _storagePath + diff.asset.path;
-                    // _fileUtils->removeFile(exsitedPath);
-                }
-                else
+                if (diff.type != Manifest::DiffType::DELETED)
                 {
                     std::string path = diff.asset.path;
                     DownloadUnit unit;
