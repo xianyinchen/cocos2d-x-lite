@@ -85,10 +85,6 @@ public:
      */
     static AssetsManagerEx* create(const std::string &manifestUrl, const std::string &storagePath);
     
-    /** @brief Check if the dowload was done.
-     */
-    static void checkFinish(const std::string &storagePath);
-    
     /** @brief  Check out if there is a new version of manifest.
      *          You may use this method before updating, then let user determine whether
      *          he wants to update resources.
