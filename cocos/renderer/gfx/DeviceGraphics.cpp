@@ -55,13 +55,20 @@ namespace
     }
 } // namespace {
 
+static DeviceGraphics* __instance = nullptr;
+
 DeviceGraphics* DeviceGraphics::getInstance()
 {
-    static DeviceGraphics* __instance = nullptr;
     if (__instance == nullptr)
         __instance = new (std::nothrow) DeviceGraphics();
 
     return __instance;
+}
+
+void DeviceGraphics::destroy()
+{
+    delete __instance;
+    __instance = nullptr;
 }
 
 void DeviceGraphics::setFrameBuffer(const FrameBuffer* fb)

@@ -97,6 +97,11 @@ public:
     static DeviceGraphics* getInstance();
 
     /**
+     * Returns a shared instance of the director.
+     */
+    static void destroy();
+
+    /**
      * Sets the target FrameBuffer
      */
     void setFrameBuffer(const FrameBuffer* fb);

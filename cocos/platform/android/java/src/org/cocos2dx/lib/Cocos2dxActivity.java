@@ -423,7 +423,8 @@ public abstract class Cocos2dxActivity extends Activity implements Cocos2dxHelpe
 
         Log.d(TAG, "Cocos2dxActivity onDestroy: " + this + ", mGLSurfaceView" + mGLSurfaceView);
         if (mGLSurfaceView != null) {
-            Cocos2dxHelper.terminateProcess();
+            mGLSurfaceView.destroy();
+            //Cocos2dxHelper.terminateProcess();
         }
     }
 

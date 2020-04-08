@@ -36,6 +36,13 @@
 #include "base/CCScheduler.h"
 #include "base/CCAutoreleasePool.h"
 #include "base/CCGLUtils.h"
+#include "renderer/gfx/DeviceGraphics.h"
+
+#if USE_MIDDLEWARE
+#include "editor-support/MiddlewareManager.h"
+#endif
+
+using namespace cocos2d::renderer;
 
 #define  JNI_IMP_LOG_TAG    "JniImp"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,JNI_IMP_LOG_TAG,__VA_ARGS__)
@@ -295,6 +302,34 @@ extern "C"
         }
         if (g_app)
             g_app->onResume();
+    }
+
+    JNIEXPORT void JNICALL JNI_RENDER(nativeOnDestroy)()
+    {
+        if (g_isGameFinished) {
+            return;
+        }
+        if (g_app) {
+            g_isStarted = false;
+            g_isGameFinished = false;
+
+            DeviceGraphics::destroy();
+#if USE_MIDDLEWARE
+            // udpate middleware before render
+            middleware::MiddlewareManager::destroyInstance();
+#endif
+            auto scheduler = Application::getInstance()->getScheduler();
+            scheduler->removeAllFunctionsToBePerformedInCocosThread();
+            scheduler->unscheduleAll();
+
+            se::ScriptEngine::getInstance()->cleanup();
+            cocos2d::PoolManager::getInstance()->getCurrentPool()->clear();
+
+            //REFINE: Wait HttpClient, WebSocket, Audio thread to exit
+
+            ccInvalidateStateCache();
+            EventDispatcher::init();
+        }
     }
 
     JNIEXPORT void JNICALL JNI_RENDER(nativeInsertText)(JNIEnv* env, jobject thiz, jstring text)

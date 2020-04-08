@@ -181,6 +181,7 @@ public class Cocos2dxRenderer implements GLSurfaceView.Renderer {
     private static native void nativeOnSurfaceChanged(final int width, final int height);
     private static native void nativeOnPause();
     private static native void nativeOnResume();
+    private static native void nativeOnDestroy();
 
     // This function will be invoked in main thread.
     public void setPauseInMainThread(boolean value) {
@@ -246,6 +247,10 @@ public class Cocos2dxRenderer implements GLSurfaceView.Renderer {
     public void handleOnResume() {
         Cocos2dxHelper.onEnterForeground();
         Cocos2dxRenderer.nativeOnResume();
+    }
+
+    public void handleOnDestroy() {
+        Cocos2dxRenderer.nativeOnDestroy();
     }
 
     private static native void nativeInsertText(final String text);

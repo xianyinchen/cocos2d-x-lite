@@ -106,6 +106,15 @@ public class Cocos2dxGLSurfaceView extends GLSurfaceView {
         return this.mCocos2dxRenderer.getContentText();
     }
 
+    public void destroy() {
+        this.queueEvent(new Runnable() {
+            @Override
+            public void run() {
+                Cocos2dxGLSurfaceView.this.mCocos2dxRenderer.handleOnDestroy();
+            }
+        });
+    }
+
     // ===========================================================
     // Methods for/from SuperClass/Interfaces
     // ===========================================================
