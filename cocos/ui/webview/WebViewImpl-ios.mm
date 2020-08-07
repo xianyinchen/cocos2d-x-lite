@@ -122,6 +122,10 @@
         auto eaglview = (CCEAGLView*)cocos2d::Application::getInstance()->getView();
         [eaglview addSubview:self.uiWebView];
     }
+    
+    if(@available(iOS 11.0, *)) {
+        self.uiWebView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+    }
 }
 
 - (void)setVisible:(bool)visible {
