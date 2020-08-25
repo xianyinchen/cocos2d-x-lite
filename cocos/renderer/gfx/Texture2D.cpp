@@ -150,6 +150,10 @@ void Texture2D::setSubImage(const SubImageOption& option)
     GL_CHECK(ccPixelStorei(GL_UNPACK_FLIP_Y_WEBGL, flipY));
     GL_CHECK(ccPixelStorei(GL_UNPACK_PREMULTIPLY_ALPHA_WEBGL, premultiplyAlpha));
     
+    if (NULL == option.imageData) {
+        return;
+    }    
+
     ccFlipYOrPremultiptyAlphaIfNeeded(_glFormat, option.width, option.height, (uint32_t)option.imageDataLength, option.imageData);
 
     if (_compressed)
@@ -213,6 +217,10 @@ void Texture2D::setImage(const ImageOption& option)
             break;
         }
     }
+
+    if (NULL == img.data) {
+        return;
+    }    
     
     ccFlipYOrPremultiptyAlphaIfNeeded(_glFormat, option.width, option.height, pixelBytes, img.data);
 
