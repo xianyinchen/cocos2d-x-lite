@@ -53,13 +53,6 @@ namespace
                 (int)(viewSize.y / screenScale / devicePixelRatio));
         se->evalString(commandBuf);
         
-#ifdef USE_GFX_RENDERER
-        auto device = cocos2d::renderer::DeviceGraphics::getInstance();
-        device->setViewport(0, 0, viewSize.x / devicePixelRatio, viewSize.y / devicePixelRatio);
-#else
-        cocos2d::ccViewport(0,0, viewSize.x / devicePixelRatio, viewSize.y / devicePixelRatio);
-#endif
-        
         glDepthMask(GL_TRUE);
         return true;
     }
