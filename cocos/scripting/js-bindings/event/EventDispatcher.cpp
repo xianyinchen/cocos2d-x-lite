@@ -87,6 +87,14 @@ namespace cocos2d
             _jsResizeEventObj->decRef();
             _jsResizeEventObj = nullptr;
         }
+        
+        if (_jsOrientationEventObj != nullptr)
+        {
+            _jsOrientationEventObj->unroot();
+            _jsOrientationEventObj->decRef();
+            _jsOrientationEventObj = nullptr;
+        }
+        
         _inited = false;
         _tickVal.setUndefined();
     }
