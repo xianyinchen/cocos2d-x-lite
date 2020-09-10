@@ -235,7 +235,7 @@ namespace
         setTexFiledKeyboardType(g_textField, showInfo.inputType);
         g_textField.text = [NSString stringWithUTF8String: showInfo.defaultValue.c_str()];
         [g_textFieldConfirmButton setTitle:getConfirmButtonTitle(showInfo.confirmType) forState:UIControlStateNormal];
-
+        
         [g_textField.undoManager disableUndoRegistration];
     }
     
@@ -355,8 +355,8 @@ namespace
 @implementation TextFieldDelegate
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    NSInteger strLength = textField.text.length - range.length + string.length;
-    return (strLength <= g_maxLength);
+    // REFINE: check length limit before text changed
+    return YES;
 }
 
 - (void)textFieldDidChange:(UITextField *)textField
@@ -367,11 +367,13 @@ namespace
     dispatch_async(dispatch_get_main_queue(), ^{
         // check length limit after text changed, a little rude
         if (textField.text.length > g_maxLength) {
+            
             NSRange rangeIndex = [textField.text rangeOfComposedCharacterSequenceAtIndex:g_maxLength];
             textField.text = [textField.text substringToIndex:rangeIndex.location];
         }
 
         callJSFunc("input", [textField.text UTF8String]);
+        setText(textField.text);
     });
 }
 
@@ -410,6 +412,7 @@ namespace
         textView.text = [textView.text substringToIndex:g_maxLength];
 
     callJSFunc("input", [textView.text UTF8String]);
+    setText(textView.text);
 }
 @end
 
