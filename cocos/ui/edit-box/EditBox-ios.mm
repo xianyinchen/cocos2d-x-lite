@@ -235,6 +235,8 @@ namespace
         setTexFiledKeyboardType(g_textField, showInfo.inputType);
         g_textField.text = [NSString stringWithUTF8String: showInfo.defaultValue.c_str()];
         [g_textFieldConfirmButton setTitle:getConfirmButtonTitle(showInfo.confirmType) forState:UIControlStateNormal];
+
+        [g_textField.undoManager disableUndoRegistration];
     }
     
     void initTextView(const CGRect& viewRect, const CGRect& btnRect, const cocos2d::EditBox::ShowInfo& showInfo)
@@ -353,8 +355,8 @@ namespace
 @implementation TextFieldDelegate
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    // REFINE: check length limit before text changed
-    return YES;
+    NSInteger strLength = textField.text.length - range.length + string.length;
+    return (strLength <= g_maxLength);
 }
 
 - (void)textFieldDidChange:(UITextField *)textField
@@ -362,13 +364,15 @@ namespace
     if (textField.markedTextRange != nil)
         return;
 
-    // check length limit after text changed, a little rude
-    if (textField.text.length > g_maxLength) {
-        NSRange rangeIndex = [textField.text rangeOfComposedCharacterSequenceAtIndex:g_maxLength];
-        textField.text = [textField.text substringToIndex:rangeIndex.location];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // check length limit after text changed, a little rude
+        if (textField.text.length > g_maxLength) {
+            NSRange rangeIndex = [textField.text rangeOfComposedCharacterSequenceAtIndex:g_maxLength];
+            textField.text = [textField.text substringToIndex:rangeIndex.location];
+        }
 
-    callJSFunc("input", [textField.text UTF8String]);
+        callJSFunc("input", [textField.text UTF8String]);
+    });
 }
 
 -(BOOL) textFieldShouldReturn:(UITextField *)textField
