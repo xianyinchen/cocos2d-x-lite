@@ -970,7 +970,7 @@ void AssetsManagerEx::updateSucceed()
             }
 
             // Remove from delete list for safe, although this is not the case in general.
-            auto diff_itr = diff_map.find(dstPath);
+            auto diff_itr = diff_map.find(relativePath);
             if (diff_itr != diff_map.end()) {
                 diff_map.erase(diff_itr);
             }
