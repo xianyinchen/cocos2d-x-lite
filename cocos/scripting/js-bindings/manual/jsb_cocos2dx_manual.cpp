@@ -705,6 +705,7 @@ static void js_engine_LabelRenderer_export_structs_info(se::Object *obj)
         se::Object *cfgFields = se::Object::createJSONObject(ss.str());
         assert(cfgFields);
         self->setProperty("_cfgFields", se::Value(cfgFields));
+        cfgFields->decRef();
     }
     {
         std::stringstream ss;
@@ -752,6 +753,7 @@ static void js_engine_LabelRenderer_export_structs_info(se::Object *obj)
         se::Object *cfgFields = se::Object::createJSONObject(ss.str());
         assert(cfgFields);
         self->setProperty("_layoutFields", se::Value(cfgFields));
+        cfgFields->decRef();
     }
     
 }
