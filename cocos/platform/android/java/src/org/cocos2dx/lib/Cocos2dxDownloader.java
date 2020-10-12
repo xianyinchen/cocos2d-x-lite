@@ -190,7 +190,14 @@ public class Cocos2dxDownloader {
 
                             try {
 
-                                if(response.code() != 200) {
+                                if(!(response.code() >= 200 && response.code() <= 206)) {
+                                    // it is encourage to delete the tmp file when requested range not satisfiable.
+                                    if (response.code() == 416) {
+                                        File file = new File(path + downloader._tempFileNameSuffix);
+                                        if (file.exists() && file.isFile()) {
+                                            file.delete();
+                                        }
+                                    }                                    
                                     downloader.onFinish(id, -2, response.message(), null);
                                     return;
                                 }
@@ -218,7 +225,7 @@ public class Cocos2dxDownloader {
                                     while ((len = is.read(buf)) != -1) {
                                         current += len;
                                         fos.write(buf, 0, len);
-                                        downloader.onProgress(id, current, len, total);
+                                        downloader.onProgress(id, len, current, total);
                                     }
                                     fos.flush();
 
@@ -256,7 +263,7 @@ public class Cocos2dxDownloader {
                                     while ((len = is.read(buf)) != -1) {
                                         current += len;
                                         buffer.write(buf, 0, len);
-                                        downloader.onProgress(id, current, len, total);
+                                        downloader.onProgress(id, len, current, total);
                                     }
                                     downloader.onFinish(id, 0, null, buffer.toByteArray());
                                     downloader.runNextTaskIfExists();
