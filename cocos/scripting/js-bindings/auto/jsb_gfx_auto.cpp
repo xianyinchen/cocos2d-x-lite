@@ -1272,6 +1272,27 @@ static bool js_gfx_RenderBuffer_init(se::State& s)
 }
 SE_BIND_FUNC(js_gfx_RenderBuffer_init)
 
+static bool js_gfx_RenderBuffer_update(se::State& s)
+{
+    cocos2d::renderer::RenderBuffer* cobj = (cocos2d::renderer::RenderBuffer*)s.nativeThisObject();
+    SE_PRECONDITION2(cobj, false, "js_gfx_RenderBuffer_update : Invalid Native Object");
+    const auto& args = s.args();
+    size_t argc = args.size();
+    CC_UNUSED bool ok = true;
+    if (argc == 2) {
+        unsigned short arg0 = 0;
+        unsigned short arg1 = 0;
+        ok &= seval_to_uint16(args[0], &arg0);
+        ok &= seval_to_uint16(args[1], &arg1);
+        SE_PRECONDITION2(ok, false, "js_gfx_RenderBuffer_update : Error processing arguments");
+        cobj->update(arg0, arg1);
+        return true;
+    }
+    SE_REPORT_ERROR("wrong number of arguments: %d, was expecting %d", (int)argc, 2);
+    return false;
+}
+SE_BIND_FUNC(js_gfx_RenderBuffer_update)
+
 static bool js_gfx_RenderBuffer_create(se::State& s)
 {
     const auto& args = s.args();
@@ -1327,6 +1348,7 @@ bool js_register_gfx_RenderBuffer(se::Object* obj)
     auto cls = se::Class::create("RenderBuffer", obj, __jsb_cocos2d_renderer_RenderTarget_proto, _SE(js_gfx_RenderBuffer_constructor));
 
     cls->defineFunction("init", _SE(js_gfx_RenderBuffer_init));
+    cls->defineFunction("update", _SE(js_gfx_RenderBuffer_update));
     cls->defineStaticFunction("create", _SE(js_gfx_RenderBuffer_create));
     cls->defineFinalizeFunction(_SE(js_cocos2d_renderer_RenderBuffer_finalize));
     cls->install();
