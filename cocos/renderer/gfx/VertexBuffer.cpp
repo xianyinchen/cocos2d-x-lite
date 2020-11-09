@@ -82,6 +82,8 @@ void VertexBuffer::update(uint32_t offset, const void* data, size_t dataByteLeng
         return;
     }
 
+    if (dataByteLength == 0) return;
+
     if (data && dataByteLength + offset > _bytes)
     {
         if (offset) {
