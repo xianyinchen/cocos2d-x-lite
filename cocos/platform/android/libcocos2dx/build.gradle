@@ -31,5 +31,8 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: '../java/libs')
-    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+    implementation 'com.google.code.findbugs:jsr305:2.0.1'
+    implementation 'com.squareup.okio:okio:1.15.0'
+    implementation 'org.codehaus.mojo:animal-sniffer-annotations:1.17'
+    implementation 'org.conscrypt:conscrypt-openjdk-uber:1.4.0'
 }
