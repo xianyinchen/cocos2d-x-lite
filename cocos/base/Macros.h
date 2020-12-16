@@ -299,12 +299,7 @@ It should work same as apples CFSwapInt32LittleToHost(..)
 #if (CC_PLATFORM == CC_PLATFORM_WINDOWS)
     #define CC_ENDIAN CC_ENDIAN_LITTLE
 #else
-    #if (CC_PLATFORM == CC_PLATFORM_MAC_OSX)
-        #include <machine/endian.h>
-    #else
-        #include <endian.h>
-    #endif // (CC_PLATFORM == CC_PLATFORM_MAC_OSX)
-    #
+    #include <sys/types.h>
     #if __BYTE_ORDER == __LITTLE_ENDIAN
         #define CC_ENDIAN CC_ENDIAN_LITTLE
     #else
