@@ -22,6 +22,9 @@
  THE SOFTWARE.
  ****************************************************************************/
 
+#import <AVKit/AVPlayerViewController.h>
+#import <CoreMedia/CMTime.h>
+
 #include "VideoPlayer.h"
 
 using namespace cc;
@@ -31,8 +34,6 @@ using namespace cc;
 
 //-------------------------------------------------------------------------------------
 
-#import <AVKit/AVPlayerViewController.h>
-#import <CoreMedia/CMTime.h>
 #include "platform/Application.h"
 #include "platform/FileUtils.h"
 
