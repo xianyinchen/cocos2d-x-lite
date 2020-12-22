@@ -33,6 +33,9 @@
 #include "network/Downloader.h"
 #include <type_traits>
 #include <assert.h>
+#if USE_SPINE
+#include "cocos/editor-support/spine-creator-support/spine-cocos2dx.h"
+#endif
 
 namespace cc {
 namespace gfx {
@@ -758,22 +761,23 @@ constexpr bool is_jsb_object_v = _is_jsb_object<typename std::remove_const<T>::t
 #if HAS_CONSTEXPR
 
 template<typename Out, typename In>
-constexpr Out holder_convert_to(In& input) {
+constexpr inline Out& holder_convert_to(In& input)
+{
     if CC_CONSTEXPR (std::is_same< Out, In>::value)
     {
-        return (Out)(input);
+        return input;
     }
     else if CC_CONSTEXPR (std::is_same<Out, std::add_pointer_t<In>>::value)
     {
-        return (Out)(&input);
+        return &input;
     } 
     else if CC_CONSTEXPR (std::is_same<Out, std::remove_pointer_t<In>>::value)
     {
-        return (Out)(*input);
+        return *input;
     }
     else if CC_CONSTEXPR (std::is_enum<In>::value)
     {
-        return (Out)input;
+        return input;
     }
     else {
         assert(false); // "types are not convertiable!");
@@ -807,7 +811,11 @@ struct HolderType {
     using local_type = typename std::conditional_t<is_reference && is_jsb_object_v<T>, std::add_pointer_t<type>, type>;
     local_type data;
     type *ptr = nullptr;
-    constexpr inline type value()
+#if HAS_CONSTEXPR
+    constexpr inline type& value()
+#else
+	constexpr inline type value()
+#endif
     {
         if(ptr) return *ptr;
         return holder_convert_to<type, local_type>(data);
@@ -1575,4 +1583,95 @@ bool nativevalue_to_se(const cc::extension::ManifestAsset& from, se::Value& to, 
 
 #if __clang__
 #pragma clang diagnostic pop
+#endif
+
+// Spine conversions
+#if USE_SPINE
+
+template <typename T>
+bool nativevalue_to_se(const spine::Vector<T> &v, se::Value &ret, se::Object *) {
+    se::HandleObject obj(se::Object::createArrayObject(v.size()));
+    bool ok = true;
+
+    spine::Vector<T> tmpv = v;
+    for (uint32_t i = 0, count = (uint32_t)tmpv.size(); i < count; i++) {
+        se::Value tmp;
+        ok = nativevalue_to_se(tmpv[i], tmp, nullptr);
+        if (!ok || !obj->setArrayElement(i, tmp)) {
+            ok = false;
+            ret.setUndefined();
+            break;
+        }
+    }
+
+    if (ok)
+        ret.setObject(obj);
+
+    return ok;
+}
+
+template <typename T>
+bool nativevalue_to_se(const spine::Vector<T *> &v, se::Value &ret, se::Object *) {
+    se::HandleObject obj(se::Object::createArrayObject(v.size()));
+    bool ok = true;
+
+    spine::Vector<T *> tmpv = v;
+    for (uint32_t i = 0, count = (uint32_t)tmpv.size(); i < count; i++) {
+        se::Value tmp;
+        ok = native_ptr_to_rooted_seval<T>(tmpv[i], &tmp);
+        if (!ok || !obj->setArrayElement(i, tmp)) {
+            ok = false;
+            ret.setUndefined();
+            break;
+        }
+    }
+
+    if (ok) ret.setObject(obj);
+    return ok;
+}
+
+template <typename T>
+bool sevalue_to_native(const se::Value &v, spine::Vector<T *> *ret, se::Object *) {
+    assert(ret != nullptr);
+    assert(v.isObject());
+    se::Object *obj = v.toObject();
+    assert(obj->isArray());
+
+    bool ok = true;
+    uint32_t len = 0;
+    ok = obj->getArrayLength(&len);
+    if (!ok) {
+        ret->clear();
+        return false;
+    }
+
+    se::Value tmp;
+    for (uint32_t i = 0; i < len; ++i) {
+        ok = obj->getArrayElement(i, &tmp);
+        if (!ok || !tmp.isObject()) {
+            ret->clear();
+            return false;
+        }
+
+        T *nativeObj = (T *)tmp.toObject()->getPrivateData();
+        ret->add(nativeObj);
+    }
+
+    return true;
+}
+
+template <>
+bool nativevalue_to_se(const spine::Vector<spine::String> &v, se::Value &ret, se::Object *);
+
+template <>
+bool nativevalue_to_se(const se_object_ptr &obj, se::Value &val, se::Object *);
+
+template <>
+bool nativevalue_to_se(const spine::String &obj, se::Value &val, se::Object *);
+
+template <>
+bool sevalue_to_native(const se::Value &v, spine::Vector<spine::String> *ret, se::Object *);
+
+template <>
+bool seval_to_Map_string_key(const se::Value &v, cc::Map<std::string, cc::middleware::Texture2D*> *ret);
 #endif
