@@ -23,8 +23,9 @@
 
 #pragma once
 
-#include "CCArmatureDisplay.h"
 #include "IOBuffer.h"
+#include "CCArmatureDisplay.h"
+#include "base/Ref.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 

@@ -24,14 +24,10 @@
 #include "ArmatureCache.h"
 #include "CCFactory.h"
 #include "base/TypeDef.h"
-#include "base/memory/Memory.h"
-#include "math/Math.h"
-#include "core/gfx/GFXDef.h"
 
 USING_NS_MW;
 
 using namespace cc;
-using namespace cc::gfx;
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -331,9 +327,9 @@ void ArmatureCache::traverseArmature(Armature *armature, float parentOpacity /*=
             continue;
         }
         slot->updateWorldMatrix();
-
-        cc::Mat4 *worldMatrix = &slot->worldMatrix;
-
+        
+        Mat4* worldMatrix = &slot->worldMatrix;
+        
         // If slots has child armature,will traverse child first.
         Armature *childArmature = slot->getChildArmature();
         if (childArmature != nullptr) {
@@ -354,10 +350,10 @@ void ArmatureCache::traverseArmature(Armature *armature, float parentOpacity /*=
         }
 
         // Calculation vertex color.
-        color.a = slot->color.a * parentOpacity;
-        color.r = slot->color.r;
-        color.g = slot->color.g;
-        color.b = slot->color.b;
+        color.a = slot->color.a * parentOpacity / 255.0f;
+        color.r = slot->color.r / 255.0f;
+        color.g = slot->color.g / 255.0f;
+        color.b = slot->color.b / 255.0f;
 
         if (preColor != color) {
             preColor = color;
@@ -380,10 +376,10 @@ void ArmatureCache::traverseArmature(Armature *armature, float parentOpacity /*=
             worldVertex->vertex.x = vertex->vertex.x * worldMatrix->m[0] + vertex->vertex.y * worldMatrix->m[4] + worldMatrix->m[12];
             worldVertex->vertex.y = vertex->vertex.x * worldMatrix->m[1] + vertex->vertex.y * worldMatrix->m[5] + worldMatrix->m[13];
 
-            worldVertex->color.r = color.r / 255.0f;
-            worldVertex->color.g = color.g / 255.0f;
-            worldVertex->color.b = color.b / 255.0f;
-            worldVertex->color.a = color.a / 255.0f;
+            worldVertex->color.r = color.r;
+            worldVertex->color.g = color.g;
+            worldVertex->color.b = color.b;
+            worldVertex->color.a = color.a;
         }
 
         vb.writeBytes((char *)worldTriangles, vbSize);
@@ -391,7 +387,7 @@ void ArmatureCache::traverseArmature(Armature *armature, float parentOpacity /*=
         auto ibSize = triangles.indexCount * sizeof(unsigned short);
         ib.checkSpace(ibSize, true);
 
-        auto vertexOffset = _curVSegLen / 5;
+        auto vertexOffset = _curVSegLen / VF_XYZUVC;
         for (int ii = 0, nn = triangles.indexCount; ii < nn; ii++) {
             ib.writeUint16(triangles.indices[ii] + vertexOffset);
         }

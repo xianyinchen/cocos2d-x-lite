@@ -22,18 +22,16 @@
 */
 
 #include "CCArmatureCacheDisplay.h"
+#include "MiddlewareManager.h"
 #include "ArmatureCacheMgr.h"
 #include "CCFactory.h"
 #include "SharedBufferManager.h"
-
-#include "MiddlewareManager.h"
 #include "base/TypeDef.h"
 #include "base/memory/Memory.h"
 #include "math/Math.h"
 #include "core/gfx/GFXDef.h"
 
 
-USING_NS_MW;
 
 using namespace cc;
 using namespace cc::gfx;
@@ -46,6 +44,7 @@ static const std::string completeEvent = "complete";
 
 DRAGONBONES_NAMESPACE_BEGIN
 
+USING_NS_MW;
 CCArmatureCacheDisplay::CCArmatureCacheDisplay(const std::string &armatureName, const std::string &armatureKey, const std::string &atlasUUID, bool isShare) {
     _eventObject = BaseObject::borrowObject<EventObject>();
 
@@ -73,19 +72,21 @@ CCArmatureCacheDisplay::CCArmatureCacheDisplay(const std::string &armatureName, 
 
 CCArmatureCacheDisplay::~CCArmatureCacheDisplay() {
     dispose();
+
+	if (_sharedBufferOffset) {
+		delete _sharedBufferOffset;
+		_sharedBufferOffset = nullptr;
+	}
+
+	if (_paramsBuffer) {
+		delete _paramsBuffer;
+		_paramsBuffer = nullptr;
+	}
 }
 
 void CCArmatureCacheDisplay::dispose() {
 
-    if (_sharedBufferOffset) {
-        delete _sharedBufferOffset;
-        _sharedBufferOffset = nullptr;
-    }
 
-    if (_paramsBuffer) {
-        delete _paramsBuffer;
-        _paramsBuffer = nullptr;
-    }
 
     if (_armatureCache) {
         _armatureCache->release();
@@ -151,9 +152,8 @@ void CCArmatureCacheDisplay::render(float dt) {
     auto mgr = MiddlewareManager::getInstance();
     if (!mgr->isRendering) return;
 
-    auto &segments = frameData->getSegments();
-    auto &colors = frameData->getColors();
-    if (segments.size() == 0 || colors.size() == 0) return;
+	auto& segments = frameData->getSegments();
+	auto& colors = frameData->getColors();
 
     _sharedBufferOffset->reset();
     _sharedBufferOffset->clear();
@@ -176,8 +176,10 @@ void CCArmatureCacheDisplay::render(float dt) {
     // write border
     renderInfo->writeUint32(0xffffffff);
 
-    // matieral len
-    renderInfo->writeUint32(segments.size());
+	// matieral len
+	renderInfo->writeUint32(segments.size());
+
+    if (segments.size() == 0 || colors.size() == 0) return;
 
     middleware::MeshBuffer *mb = mgr->getMeshBuffer(VF_XYZUVC);
     middleware::IOBuffer &vb = mb->getVB();
@@ -201,7 +203,6 @@ void CCArmatureCacheDisplay::render(float dt) {
     std::size_t vertexBytes = 0;
     std::size_t indexBytes = 0;
     int curTextureIndex = 0;
-    double effectHash = 0;
     BlendMode blendMode = BlendMode::Normal;
     std::size_t dstVertexOffset = 0;
     std::size_t dstIndexOffset = 0;
@@ -222,15 +223,15 @@ void CCArmatureCacheDisplay::render(float dt) {
 
     auto handleColor = [&](ArmatureCache::ColorData *colorData) {
         tempA = colorData->color.a * _nodeColor.a;
-        multiplier = _premultipliedAlpha ? tempA / 255 : 1;
+        multiplier = _premultipliedAlpha ? tempA / 255.0f : 1.0f;
         tempR = _nodeColor.r * multiplier;
         tempG = _nodeColor.g * multiplier;
         tempB = _nodeColor.b * multiplier;
 
-        color.a = tempA / 255.0f;
-        color.r = (colorData->color.r * tempR) / 255.0f;
-        color.g = (colorData->color.g * tempG) / 255.0f;
-        color.b = (colorData->color.b * tempB) / 255.0f;
+        color.a = tempA;
+        color.r = colorData->color.r * tempR;
+        color.g = colorData->color.g * tempG;
+        color.b = colorData->color.b * tempB;
     };
 
     handleColor(nowColor);
@@ -263,6 +264,7 @@ void CCArmatureCacheDisplay::render(float dt) {
             default:
                 curBlendSrc = (int)(_premultipliedAlpha ? BlendFactor::ONE : BlendFactor::SRC_ALPHA);
                 curBlendDst = (int)BlendFactor::ONE_MINUS_SRC_ALPHA;
+				break;
         }
         // fill new blend src and dst
         renderInfo->writeUint32(curBlendSrc);
@@ -278,8 +280,8 @@ void CCArmatureCacheDisplay::render(float dt) {
         // batch handle
         if (_batch) {
             cc::Vec3 *point = nullptr;
-            float tempZ = 0.0f;
-            for (auto posIndex = 0; posIndex < segment->vertexFloatCount; posIndex += 5) {
+
+            for (auto posIndex = 0; posIndex < segment->vertexFloatCount; posIndex += VF_XYZUVC) {
                 point = (cc::Vec3 *)(dstVertexBuffer + posIndex);
                 // force z value to zero
                 point->z = 0;
@@ -291,7 +293,7 @@ void CCArmatureCacheDisplay::render(float dt) {
         // handle vertex color
         if (needColor) {
             auto frameFloatOffset = srcVertexBytesOffset / sizeof(float);
-            for (auto colorIndex = 0; colorIndex < segment->vertexFloatCount; colorIndex += 5, frameFloatOffset += 5) {
+            for (auto colorIndex = 0; colorIndex < segment->vertexFloatCount; colorIndex += VF_XYZUVC, frameFloatOffset += VF_XYZUVC) {
                 if (frameFloatOffset >= maxVFOffset) {
                     nowColor = colors[colorOffset++];
                     handleColor(nowColor);
@@ -314,8 +316,28 @@ void CCArmatureCacheDisplay::render(float dt) {
             dstIndexBuffer[indexPos] += dstVertexOffset;
         }
         srcIndexBytesOffset += indexBytes;
-    }
 
+		// fill new index and vertex buffer id
+		auto bufferIndex = mb->getBufferPos();
+		renderInfo->writeUint32(bufferIndex);
+
+		// fill new index offset
+		renderInfo->writeUint32(dstIndexOffset);
+		// fill new indice segamentation count
+		renderInfo->writeUint32(segment->indexCount);
+    }
+    
+	if (_useAttach) {
+		auto &bonesData = frameData->getBones();
+		auto boneCount = frameData->getBoneCount();
+
+		for (int i = 0, n = boneCount; i < n; i++) {
+			auto bone = bonesData[i];
+			attachInfo->checkSpace(sizeof(cc::Mat4), true);
+			attachInfo->writeBytes((const char *)&bone->globalTransformMatrix, sizeof(cc::Mat4));
+		}
+	}
+}
     void CCArmatureCacheDisplay::beginSchedule() {
         MiddlewareManager::getInstance()->addTimer(this);
     }
@@ -337,26 +359,17 @@ void CCArmatureCacheDisplay::render(float dt) {
         stopSchedule();
     }
 
-    void CCArmatureCacheDisplay::setAttachEnabled(bool enabled) {
-        _useAttach = enabled;
-    }
-
-    Armature *CCArmatureCacheDisplay::getArmature() const {
-        auto armatureDisplay = _armatureCache->getArmatureDisplay();
-        return armatureDisplay->getArmature();
-    }
+Armature* CCArmatureCacheDisplay::getArmature() const
+{
+    auto armatureDisplay = _armatureCache->getArmatureDisplay();
+    return armatureDisplay->getArmature();
+}
 
     Animation *CCArmatureCacheDisplay::getAnimation() const {
         auto armature = getArmature();
         return armature->getAnimation();
     }
 
-    void CCArmatureCacheDisplay::setColor(float r, float g, float b, float a) {
-        _nodeColor.r = r / 255.0f;
-        _nodeColor.g = g / 255.0f;
-        _nodeColor.b = b / 255.0f;
-        _nodeColor.a = a / 255.0f;
-    }
 
     void CCArmatureCacheDisplay::playAnimation(const std::string &name, int playTimes) {
         _playTimes = playTimes;
@@ -397,6 +410,20 @@ void CCArmatureCacheDisplay::render(float dt) {
     void CCArmatureCacheDisplay::updateAllAnimationCache() {
         _armatureCache->resetAllAnimationData();
     }
+	
+	
+	    void CCArmatureCacheDisplay::setColor(float r, float g, float b, float a) {
+        _nodeColor.r = r / 255.0f;
+        _nodeColor.g = g / 255.0f;
+        _nodeColor.b = b / 255.0f;
+        _nodeColor.a = a / 255.0f;
+    }
+	
+    void CCArmatureCacheDisplay::setAttachEnabled(bool enabled) {
+        _useAttach = enabled;
+    }
+
+
 
     se_object_ptr CCArmatureCacheDisplay::getSharedBufferOffset() const {
         if (_sharedBufferOffset) {

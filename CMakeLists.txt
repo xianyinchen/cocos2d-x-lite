@@ -882,7 +882,15 @@ if(USE_MIDDLEWARE)
 			cocos/bindings/auto/jsb_cocos2dx_spine_auto.cpp
 			cocos/bindings/auto/jsb_cocos2dx_spine_auto.h
 		)
-	endif()
+    endif()
+    if(USE_DRAGONBONES)
+        cocos_source_files(
+            cocos/bindings/auto/jsb_dragonbones_auto.cpp
+            cocos/bindings/auto/jsb_dragonbones_auto.h
+            cocos/bindings/manual/jsb_dragonbones_manual.cpp
+            cocos/bindings/manual/jsb_dragonbones_manual.h
+        )
+    endif()
 endif()
 
 ######## manual
@@ -1463,6 +1471,8 @@ target_compile_definitions(cocos2d PUBLIC
     $<IF:$<BOOL:${USE_EDIT_BOX}>,CC_USE_EDITBOX=1,CC_USE_EDITBOX=0>
     $<IF:$<BOOL:${USE_V8_DEBUGGER}>,USE_V8_DEBUGGER=1,USE_V8_DEBUGGER=0>
     $<$<BOOL:${USE_SE_JSC}>:SCRIPT_ENGINE_TYPE=3>
+    $<IF:$<BOOL:${USE_DRAGONBONES}>,USE_DRAGONBONES=1,USE_DRAGONBONES=0>
+    $<IF:$<BOOL:${USE_SPINE}>,USE_SPINE=1,USE_SPINE=0>
     $<$<CONFIG:Debug>:CC_DEBUG=1>
 )
 

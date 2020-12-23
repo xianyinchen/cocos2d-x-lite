@@ -197,7 +197,7 @@ void CCSlot::_updateFrame()
                         vertexData.texCoord.v = (region.y + v * region.height) / textureHeight;
                     }
 
-                    vertexData.color = middleware::Color4F::WHITE;
+                    vertexData.color = cc::middleware::Color4B::WHITE;
 
                     if (boundsRect.origin.x > x)
                     {

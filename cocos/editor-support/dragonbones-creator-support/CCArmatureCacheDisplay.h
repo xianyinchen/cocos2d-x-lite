@@ -23,10 +23,10 @@
 
 #pragma once
 
-#include "ArmatureCache.h"
-#include "CCArmatureDisplay.h"
-#include "base/Ref.h"
 #include "dragonbones/DragonBonesHeaders.h"
+#include "base/Ref.h"
+#include "CCArmatureDisplay.h"
+#include "ArmatureCache.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -102,10 +102,11 @@ private:
     Armature *_armature = nullptr;
     ArmatureCache::AnimationData *_animationData = nullptr;
     std::map<std::string, bool> _listenerIDMap;
-    cc::middleware::Color4F _nodeColor = cc::middleware::Color4F::WHITE;
 
-    bool _useAttach = false;
-    bool _batch = true;
+	bool _useAttach = false;
+	bool _batch = true;
+	cc::middleware::Color4F _nodeColor = cc::middleware::Color4F::WHITE;
+
     bool _premultipliedAlpha = false;
     dbEventCallback _dbEventCallback = nullptr;
     ArmatureCache *_armatureCache = nullptr;

@@ -160,7 +160,7 @@ public:
      * @param[in] pos Component position
      * @return Global position
      */
-    cc::Vec2 convertToRootSpace(const cc::Vec2 &pos) const;
+    cc::Vec2 convertToRootSpace(float x, float y) const;
 
     /**
      * @return root display,if this diplay is root,then return itself.
