@@ -81,10 +81,10 @@
 #endif
 
 #if USE_MIDDLEWARE
-#include "cocos/bindings/auto/jsb_cocos2dx_editor_support_auto.h"
+#include "cocos/bindings/auto/jsb_editor_support_auto.h"
 
 #if USE_SPINE
-#include "cocos/bindings/auto/jsb_cocos2dx_spine_auto.h"
+#include "cocos/bindings/auto/jsb_spine_auto.h"
 #include "cocos/bindings/manual/jsb_spine_manual.h"
 #endif
 
@@ -145,10 +145,10 @@ bool jsb_register_all_modules() {
 #endif
 
 #if USE_MIDDLEWARE
-    se->addRegisterCallback(register_all_cocos2dx_editor_support);
+    se->addRegisterCallback(register_all_editor_support);
 
 #if USE_SPINE
-    se->addRegisterCallback(register_all_cocos2dx_spine);
+    se->addRegisterCallback(register_all_spine);
     se->addRegisterCallback(register_all_spine_manual);
 #endif
 

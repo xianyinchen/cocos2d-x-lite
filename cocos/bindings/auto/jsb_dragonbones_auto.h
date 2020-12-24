@@ -17,6 +17,16 @@ SE_DECLARE_FUNC(js_dragonbones_BaseObject_returnToPool);
 SE_DECLARE_FUNC(js_dragonbones_BaseObject_clearPool);
 SE_DECLARE_FUNC(js_dragonbones_BaseObject_setMaxCount);
 
+extern se::Object* __jsb_dragonBones_Rectangle_proto;
+extern se::Class* __jsb_dragonBones_Rectangle_class;
+
+bool js_register_dragonBones_Rectangle(se::Object* obj);
+bool register_all_dragonbones(se::Object* obj);
+
+JSB_REGISTER_OBJECT_TYPE(dragonBones::Rectangle);
+SE_DECLARE_FUNC(js_dragonbones_Rectangle_clear);
+SE_DECLARE_FUNC(js_dragonbones_Rectangle_Rectangle);
+
 extern se::Object* __jsb_dragonBones_Matrix_proto;
 extern se::Class* __jsb_dragonBones_Matrix_class;
 
@@ -66,13 +76,10 @@ bool js_register_dragonBones_ArmatureData(se::Object* obj);
 bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::ArmatureData);
-SE_DECLARE_FUNC(js_dragonbones_ArmatureData_addAction);
-SE_DECLARE_FUNC(js_dragonbones_ArmatureData_addConstraint);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getAABB);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getAnimation);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getAnimationNames);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getBone);
-SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getConstraint);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getDefaultAnimation);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getDefaultSkin);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getMesh);
@@ -80,12 +87,10 @@ SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getParent);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getSkin);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getSlot);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getType);
-SE_DECLARE_FUNC(js_dragonbones_ArmatureData_getUserData);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_setDefaultAnimation);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_setDefaultSkin);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_setParent);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_setType);
-SE_DECLARE_FUNC(js_dragonbones_ArmatureData_setUserData);
 SE_DECLARE_FUNC(js_dragonbones_ArmatureData_sortBones);
 
 extern se::Object* __jsb_dragonBones_BoneData_proto;
@@ -97,9 +102,7 @@ bool register_all_dragonbones(se::Object* obj);
 JSB_REGISTER_OBJECT_TYPE(dragonBones::BoneData);
 SE_DECLARE_FUNC(js_dragonbones_BoneData_getParent);
 SE_DECLARE_FUNC(js_dragonbones_BoneData_getTransfrom);
-SE_DECLARE_FUNC(js_dragonbones_BoneData_getUserData);
 SE_DECLARE_FUNC(js_dragonbones_BoneData_setParent);
-SE_DECLARE_FUNC(js_dragonbones_BoneData_setUserData);
 
 extern se::Object* __jsb_dragonBones_SlotData_proto;
 extern se::Class* __jsb_dragonBones_SlotData_class;
@@ -109,15 +112,9 @@ bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::SlotData);
 SE_DECLARE_FUNC(js_dragonbones_SlotData_getBlendMode);
-SE_DECLARE_FUNC(js_dragonbones_SlotData_getColor);
 SE_DECLARE_FUNC(js_dragonbones_SlotData_getParent);
-SE_DECLARE_FUNC(js_dragonbones_SlotData_getUserData);
 SE_DECLARE_FUNC(js_dragonbones_SlotData_setBlendMode);
-SE_DECLARE_FUNC(js_dragonbones_SlotData_setColor);
 SE_DECLARE_FUNC(js_dragonbones_SlotData_setParent);
-SE_DECLARE_FUNC(js_dragonbones_SlotData_setUserData);
-SE_DECLARE_FUNC(js_dragonbones_SlotData_createColor);
-SE_DECLARE_FUNC(js_dragonbones_SlotData_getDefaultColor);
 
 extern se::Object* __jsb_dragonBones_DragonBonesData_proto;
 extern se::Class* __jsb_dragonBones_DragonBonesData_class;
@@ -130,8 +127,6 @@ SE_DECLARE_FUNC(js_dragonbones_DragonBonesData_addArmature);
 SE_DECLARE_FUNC(js_dragonbones_DragonBonesData_getArmature);
 SE_DECLARE_FUNC(js_dragonbones_DragonBonesData_getArmatureNames);
 SE_DECLARE_FUNC(js_dragonbones_DragonBonesData_getFrameIndices);
-SE_DECLARE_FUNC(js_dragonbones_DragonBonesData_getUserData);
-SE_DECLARE_FUNC(js_dragonbones_DragonBonesData_setUserData);
 
 extern se::Object* __jsb_dragonBones_SkinData_proto;
 extern se::Class* __jsb_dragonBones_SkinData_class;
@@ -140,8 +135,6 @@ bool js_register_dragonBones_SkinData(se::Object* obj);
 bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::SkinData);
-SE_DECLARE_FUNC(js_dragonbones_SkinData_addDisplay);
-SE_DECLARE_FUNC(js_dragonbones_SkinData_getDisplay);
 
 extern se::Object* __jsb_dragonBones_AnimationData_proto;
 extern se::Class* __jsb_dragonBones_AnimationData_class;
@@ -150,15 +143,11 @@ bool js_register_dragonBones_AnimationData(se::Object* obj);
 bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::AnimationData);
-SE_DECLARE_FUNC(js_dragonbones_AnimationData_addConstraintTimeline);
-SE_DECLARE_FUNC(js_dragonbones_AnimationData_getActionTimeline);
 SE_DECLARE_FUNC(js_dragonbones_AnimationData_getBoneCachedFrameIndices);
 SE_DECLARE_FUNC(js_dragonbones_AnimationData_getParent);
 SE_DECLARE_FUNC(js_dragonbones_AnimationData_getSlotCachedFrameIndices);
 SE_DECLARE_FUNC(js_dragonbones_AnimationData_getZOrderTimeline);
-SE_DECLARE_FUNC(js_dragonbones_AnimationData_setActionTimeline);
 SE_DECLARE_FUNC(js_dragonbones_AnimationData_setParent);
-SE_DECLARE_FUNC(js_dragonbones_AnimationData_setZOrderTimeline);
 
 extern se::Object* __jsb_dragonBones_Armature_proto;
 extern se::Class* __jsb_dragonBones_Armature_class;
@@ -168,13 +157,11 @@ bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::Armature);
 SE_DECLARE_FUNC(js_dragonbones_Armature__addBone);
-SE_DECLARE_FUNC(js_dragonbones_Armature__addConstraint);
 SE_DECLARE_FUNC(js_dragonbones_Armature__addSlot);
 SE_DECLARE_FUNC(js_dragonbones_Armature__bufferAction);
 SE_DECLARE_FUNC(js_dragonbones_Armature_advanceTime);
 SE_DECLARE_FUNC(js_dragonbones_Armature_containsPoint);
 SE_DECLARE_FUNC(js_dragonbones_Armature_dispose);
-SE_DECLARE_FUNC(js_dragonbones_Armature_getAnimatable);
 SE_DECLARE_FUNC(js_dragonbones_Armature_getAnimation);
 SE_DECLARE_FUNC(js_dragonbones_Armature_getArmatureData);
 SE_DECLARE_FUNC(js_dragonbones_Armature_getBone);
@@ -187,7 +174,6 @@ SE_DECLARE_FUNC(js_dragonbones_Armature_getName);
 SE_DECLARE_FUNC(js_dragonbones_Armature_getParent);
 SE_DECLARE_FUNC(js_dragonbones_Armature_getProxy);
 SE_DECLARE_FUNC(js_dragonbones_Armature_getSlot);
-SE_DECLARE_FUNC(js_dragonbones_Armature_intersectsSegment);
 SE_DECLARE_FUNC(js_dragonbones_Armature_invalidUpdate);
 SE_DECLARE_FUNC(js_dragonbones_Armature_render);
 SE_DECLARE_FUNC(js_dragonbones_Armature_setCacheFrameRate);
@@ -225,7 +211,6 @@ SE_DECLARE_FUNC(js_dragonbones_AnimationState_getCurrentPlayTimes);
 SE_DECLARE_FUNC(js_dragonbones_AnimationState_getCurrentTime);
 SE_DECLARE_FUNC(js_dragonbones_AnimationState_getName);
 SE_DECLARE_FUNC(js_dragonbones_AnimationState_getTotalTime);
-SE_DECLARE_FUNC(js_dragonbones_AnimationState_init);
 SE_DECLARE_FUNC(js_dragonbones_AnimationState_isCompleted);
 SE_DECLARE_FUNC(js_dragonbones_AnimationState_isFadeComplete);
 SE_DECLARE_FUNC(js_dragonbones_AnimationState_isFadeIn);
@@ -273,11 +258,8 @@ SE_DECLARE_FUNC(js_dragonbones_Slot_getName);
 SE_DECLARE_FUNC(js_dragonbones_Slot_getParent);
 SE_DECLARE_FUNC(js_dragonbones_Slot_getSlotData);
 SE_DECLARE_FUNC(js_dragonbones_Slot_getVisible);
-SE_DECLARE_FUNC(js_dragonbones_Slot_intersectsSegment);
 SE_DECLARE_FUNC(js_dragonbones_Slot_invalidUpdate);
-SE_DECLARE_FUNC(js_dragonbones_Slot_replaceDisplayData);
 SE_DECLARE_FUNC(js_dragonbones_Slot_setChildArmature);
-SE_DECLARE_FUNC(js_dragonbones_Slot_setRawDisplayDatas);
 SE_DECLARE_FUNC(js_dragonbones_Slot_setVisible);
 SE_DECLARE_FUNC(js_dragonbones_Slot_update);
 SE_DECLARE_FUNC(js_dragonbones_Slot_updateTransformAndMatrix);
@@ -291,7 +273,6 @@ bool register_all_dragonbones(se::Object* obj);
 JSB_REGISTER_OBJECT_TYPE(dragonBones::WorldClock);
 SE_DECLARE_FUNC(js_dragonbones_WorldClock_advanceTime);
 SE_DECLARE_FUNC(js_dragonbones_WorldClock_clear);
-SE_DECLARE_FUNC(js_dragonbones_WorldClock_contains);
 SE_DECLARE_FUNC(js_dragonbones_WorldClock_getClock);
 SE_DECLARE_FUNC(js_dragonbones_WorldClock_render);
 SE_DECLARE_FUNC(js_dragonbones_WorldClock_setClock);
@@ -306,7 +287,6 @@ bool register_all_dragonbones(se::Object* obj);
 JSB_REGISTER_OBJECT_TYPE(dragonBones::Animation);
 SE_DECLARE_FUNC(js_dragonbones_Animation_advanceTime);
 SE_DECLARE_FUNC(js_dragonbones_Animation_fadeIn);
-SE_DECLARE_FUNC(js_dragonbones_Animation_getAnimationConfig);
 SE_DECLARE_FUNC(js_dragonbones_Animation_getAnimationNames);
 SE_DECLARE_FUNC(js_dragonbones_Animation_getLastAnimationName);
 SE_DECLARE_FUNC(js_dragonbones_Animation_getLastAnimationState);
@@ -322,7 +302,6 @@ SE_DECLARE_FUNC(js_dragonbones_Animation_init);
 SE_DECLARE_FUNC(js_dragonbones_Animation_isCompleted);
 SE_DECLARE_FUNC(js_dragonbones_Animation_isPlaying);
 SE_DECLARE_FUNC(js_dragonbones_Animation_play);
-SE_DECLARE_FUNC(js_dragonbones_Animation_playConfig);
 SE_DECLARE_FUNC(js_dragonbones_Animation_reset);
 SE_DECLARE_FUNC(js_dragonbones_Animation_stop);
 
@@ -336,9 +315,7 @@ JSB_REGISTER_OBJECT_TYPE(dragonBones::EventObject);
 SE_DECLARE_FUNC(js_dragonbones_EventObject_getAnimationState);
 SE_DECLARE_FUNC(js_dragonbones_EventObject_getArmature);
 SE_DECLARE_FUNC(js_dragonbones_EventObject_getBone);
-SE_DECLARE_FUNC(js_dragonbones_EventObject_getData);
 SE_DECLARE_FUNC(js_dragonbones_EventObject_getSlot);
-SE_DECLARE_FUNC(js_dragonbones_EventObject_actionDataToInstance);
 
 extern se::Object* __jsb_dragonBones_BaseFactory_proto;
 extern se::Class* __jsb_dragonBones_BaseFactory_class;
@@ -359,7 +336,6 @@ SE_DECLARE_FUNC(js_dragonbones_BaseFactory_parseDragonBonesData);
 SE_DECLARE_FUNC(js_dragonbones_BaseFactory_removeDragonBonesData);
 SE_DECLARE_FUNC(js_dragonbones_BaseFactory_removeTextureAtlasData);
 SE_DECLARE_FUNC(js_dragonbones_BaseFactory_replaceAnimation);
-SE_DECLARE_FUNC(js_dragonbones_BaseFactory_replaceDisplay);
 SE_DECLARE_FUNC(js_dragonbones_BaseFactory_replaceSkin);
 SE_DECLARE_FUNC(js_dragonbones_BaseFactory_replaceSlotDisplay);
 
@@ -370,8 +346,6 @@ bool js_register_dragonBones_CCTextureAtlasData(se::Object* obj);
 bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::CCTextureAtlasData);
-SE_DECLARE_FUNC(js_dragonbones_CCTextureAtlasData_getRenderTexture);
-SE_DECLARE_FUNC(js_dragonbones_CCTextureAtlasData_setRenderTexture);
 
 extern se::Object* __jsb_dragonBones_CCTextureData_proto;
 extern se::Class* __jsb_dragonBones_CCTextureData_class;
@@ -388,7 +362,6 @@ bool js_register_dragonBones_CCSlot(se::Object* obj);
 bool register_all_dragonbones(se::Object* obj);
 
 JSB_REGISTER_OBJECT_TYPE(dragonBones::CCSlot);
-SE_DECLARE_FUNC(js_dragonbones_CCSlot_getTexture);
 SE_DECLARE_FUNC(js_dragonbones_CCSlot_updateWorldMatrix);
 
 extern se::Object* __jsb_dragonBones_CCArmatureDisplay_proto;
