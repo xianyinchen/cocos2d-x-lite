@@ -34,7 +34,7 @@
 #include "cocos/bindings/manual/jsb_helper.h"
 #include "cocos/bindings/auto/jsb_dragonbones_auto.h"
 #include "cocos/editor-support/dragonbones-creator-support/CCDragonBonesHeaders.h"
-#include "cocos/bindings/auto/jsb_cocos2dx_editor_support_auto.h"
+#include "cocos/bindings/auto/jsb_editor_support_auto.h"
 
 #include "cocos2d.h"
 
