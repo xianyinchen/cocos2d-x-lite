@@ -133,7 +133,7 @@ inspect_values(
     USE_SE_JSC
     USE_VIDEO
     USE_WEBVIEW
-    USE_MIDDLEWARE
+	USE_MIDDLEWARE
     USE_DRAGONBONES
     USE_SPINE
     USE_WEBSOCKET_SERVER
@@ -1060,6 +1060,22 @@ if(USE_MIDDLEWARE)
             cocos/bindings/auto/jsb_spine_auto.h
             cocos/bindings/manual/jsb_spine_manual.cpp
             cocos/bindings/manual/jsb_spine_manual.h
+            cocos/bindings/auto/jsb_cocos2dx_editor_support_auto.cpp
+            cocos/bindings/auto/jsb_cocos2dx_editor_support_auto.h
+        )
+
+	if(USE_SPINE)
+		cocos_source_files(
+			cocos/bindings/auto/jsb_cocos2dx_spine_auto.cpp
+			cocos/bindings/auto/jsb_cocos2dx_spine_auto.h
+		)
+    endif()
+    if(USE_DRAGONBONES)
+        cocos_source_files(
+            cocos/bindings/auto/jsb_dragonbones_auto.cpp
+            cocos/bindings/auto/jsb_dragonbones_auto.h
+            cocos/bindings/manual/jsb_dragonbones_manual.cpp
+            cocos/bindings/manual/jsb_dragonbones_manual.h
         )
     endif()
 endif()
@@ -1097,6 +1113,15 @@ if(USE_SOCKET)
         cocos/bindings/manual/jsb_websocket.cpp
         cocos/bindings/manual/jsb_websocket.h
     )
+endif()
+
+if(USE_MIDDLEWARE)
+	if(USE_SPINE)
+		cocos_source_files(
+			cocos/bindings/manual/jsb_spine_manual.cpp
+			cocos/bindings/manual/jsb_spine_manual.h
+		)
+	endif()
 endif()
 
 if(NOT IOS AND USE_WEBSOCKET_SERVER)
@@ -1340,6 +1365,285 @@ cocos_source_files(
     extensions/ExtensionMacros.h
 )
 
+##### middleware
+if(USE_MIDDLEWARE)
+	cocos_source_files(
+		cocos/editor-support/IOBuffer.cpp
+		cocos/editor-support/IOBuffer.h
+		cocos/editor-support/IOTypedArray.cpp
+		cocos/editor-support/IOTypedArray.h
+		cocos/editor-support/MeshBuffer.cpp
+		cocos/editor-support/MeshBuffer.h
+		cocos/editor-support/middleware-adapter.cpp
+		cocos/editor-support/middleware-adapter.h
+		cocos/editor-support/MiddlewareMacro.h
+		cocos/editor-support/MiddlewareManager.cpp
+		cocos/editor-support/MiddlewareManager.h
+		cocos/editor-support/SharedBufferManager.cpp
+		cocos/editor-support/SharedBufferManager.h
+		cocos/editor-support/TypedArrayPool.cpp
+		cocos/editor-support/TypedArrayPool.h
+    )
+    
+    ##### dragonbones
+    if(USE_DRAGONBONES)
+        cocos_source_files(
+            cocos/editor-support/dragonbones/DragonBonesHeaders.h
+            cocos/editor-support/dragonbones/animation/Animation.cpp
+            cocos/editor-support/dragonbones/animation/Animation.h
+            cocos/editor-support/dragonbones/animation/AnimationState.cpp
+            cocos/editor-support/dragonbones/animation/AnimationState.h
+            cocos/editor-support/dragonbones/animation/BaseTimelineState.cpp
+            cocos/editor-support/dragonbones/animation/BaseTimelineState.h
+            cocos/editor-support/dragonbones/animation/IAnimatable.h
+            cocos/editor-support/dragonbones/animation/TimelineState.cpp
+            cocos/editor-support/dragonbones/animation/TimelineState.h
+            cocos/editor-support/dragonbones/animation/WorldClock.cpp
+            cocos/editor-support/dragonbones/animation/WorldClock.h
+            cocos/editor-support/dragonbones/armature/Armature.cpp
+            cocos/editor-support/dragonbones/armature/Armature.h
+            cocos/editor-support/dragonbones/armature/Bone.cpp
+            cocos/editor-support/dragonbones/armature/Bone.h
+            cocos/editor-support/dragonbones/armature/Constraint.cpp
+            cocos/editor-support/dragonbones/armature/Constraint.h
+            cocos/editor-support/dragonbones/armature/DeformVertices.cpp
+            cocos/editor-support/dragonbones/armature/DeformVertices.h
+            cocos/editor-support/dragonbones/armature/IArmatureProxy.h
+            cocos/editor-support/dragonbones/armature/Slot.cpp
+            cocos/editor-support/dragonbones/armature/Slot.h
+            cocos/editor-support/dragonbones/armature/TransformObject.cpp
+            cocos/editor-support/dragonbones/armature/TransformObject.h
+            cocos/editor-support/dragonbones/core/BaseObject.cpp
+            cocos/editor-support/dragonbones/core/BaseObject.h
+            cocos/editor-support/dragonbones/core/DragonBones.cpp
+            cocos/editor-support/dragonbones/core/DragonBones.h      
+            cocos/editor-support/dragonbones/event/EventObject.cpp
+            cocos/editor-support/dragonbones/event/EventObject.h
+            cocos/editor-support/dragonbones/event/IEventDispatcher.h            
+            cocos/editor-support/dragonbones/factory/BaseFactory.cpp
+            cocos/editor-support/dragonbones/factory/BaseFactory.h           
+            cocos/editor-support/dragonbones/geom/ColorTransform.h
+            cocos/editor-support/dragonbones/geom/Matrix.h
+            cocos/editor-support/dragonbones/geom/Point.cpp
+            cocos/editor-support/dragonbones/geom/Point.h
+            cocos/editor-support/dragonbones/geom/Rectangle.h
+            cocos/editor-support/dragonbones/geom/Transform.cpp
+            cocos/editor-support/dragonbones/geom/Transform.h        
+            cocos/editor-support/dragonbones/model/AnimationConfig.cpp
+            cocos/editor-support/dragonbones/model/AnimationConfig.h
+            cocos/editor-support/dragonbones/model/AnimationData.cpp
+            cocos/editor-support/dragonbones/model/AnimationData.h
+            cocos/editor-support/dragonbones/model/ArmatureData.cpp
+            cocos/editor-support/dragonbones/model/ArmatureData.h
+            cocos/editor-support/dragonbones/model/BoundingBoxData.cpp
+            cocos/editor-support/dragonbones/model/BoundingBoxData.h
+            cocos/editor-support/dragonbones/model/CanvasData.cpp
+            cocos/editor-support/dragonbones/model/CanvasData.h
+            cocos/editor-support/dragonbones/model/ConstraintData.cpp
+            cocos/editor-support/dragonbones/model/ConstraintData.h
+            cocos/editor-support/dragonbones/model/DisplayData.cpp
+            cocos/editor-support/dragonbones/model/DisplayData.h
+            cocos/editor-support/dragonbones/model/DragonBonesData.cpp
+            cocos/editor-support/dragonbones/model/DragonBonesData.h
+            cocos/editor-support/dragonbones/model/SkinData.cpp
+            cocos/editor-support/dragonbones/model/SkinData.h
+            cocos/editor-support/dragonbones/model/TextureAtlasData.cpp
+            cocos/editor-support/dragonbones/model/TextureAtlasData.h
+            cocos/editor-support/dragonbones/model/UserData.cpp
+            cocos/editor-support/dragonbones/model/UserData.h
+            cocos/editor-support/dragonbones/parser/BinaryDataParser.cpp
+            cocos/editor-support/dragonbones/parser/BinaryDataParser.h
+            cocos/editor-support/dragonbones/parser/DataParser.cpp
+            cocos/editor-support/dragonbones/parser/DataParser.h
+            cocos/editor-support/dragonbones/parser/JSONDataParser.cpp
+            cocos/editor-support/dragonbones/parser/JSONDataParser.h           
+            cocos/editor-support/dragonbones-creator-support/ArmatureCache.cpp
+            cocos/editor-support/dragonbones-creator-support/ArmatureCache.h
+            cocos/editor-support/dragonbones-creator-support/ArmatureCacheMgr.cpp
+            cocos/editor-support/dragonbones-creator-support/ArmatureCacheMgr.h
+            cocos/editor-support/dragonbones-creator-support/CCArmatureCacheDisplay.cpp
+            cocos/editor-support/dragonbones-creator-support/CCArmatureCacheDisplay.h
+            cocos/editor-support/dragonbones-creator-support/CCArmatureDisplay.cpp
+            cocos/editor-support/dragonbones-creator-support/CCArmatureDisplay.h
+            cocos/editor-support/dragonbones-creator-support/CCDragonBonesHeaders.h
+            cocos/editor-support/dragonbones-creator-support/CCFactory.cpp
+            cocos/editor-support/dragonbones-creator-support/CCFactory.h
+            cocos/editor-support/dragonbones-creator-support/CCSlot.cpp
+            cocos/editor-support/dragonbones-creator-support/CCSlot.h
+            cocos/editor-support/dragonbones-creator-support/CCTextureAtlasData.cpp
+            cocos/editor-support/dragonbones-creator-support/CCTextureAtlasData.h
+        )
+    endif()
+
+	##### spine
+	if(USE_SPINE)
+		cocos_source_files(
+			 cocos/editor-support/spine/Animation.cpp
+			 cocos/editor-support/spine/Animation.h
+			 cocos/editor-support/spine/AnimationState.cpp
+			 cocos/editor-support/spine/AnimationState.h
+			 cocos/editor-support/spine/AnimationStateData.cpp
+			 cocos/editor-support/spine/AnimationStateData.h
+			 cocos/editor-support/spine/Atlas.cpp
+			 cocos/editor-support/spine/Atlas.h
+			 cocos/editor-support/spine/AtlasAttachmentLoader.cpp
+			 cocos/editor-support/spine/AtlasAttachmentLoader.h
+			 cocos/editor-support/spine/Attachment.cpp
+			 cocos/editor-support/spine/Attachment.h
+			 cocos/editor-support/spine/AttachmentLoader.cpp
+			 cocos/editor-support/spine/AttachmentLoader.h
+			 cocos/editor-support/spine/AttachmentTimeline.cpp
+			 cocos/editor-support/spine/AttachmentTimeline.h
+			 cocos/editor-support/spine/AttachmentType.h
+			 cocos/editor-support/spine/BlendMode.h
+			 cocos/editor-support/spine/Bone.cpp
+			 cocos/editor-support/spine/Bone.h
+			 cocos/editor-support/spine/BoneData.cpp
+			 cocos/editor-support/spine/BoneData.h
+			 cocos/editor-support/spine/BoundingBoxAttachment.cpp
+			 cocos/editor-support/spine/BoundingBoxAttachment.h
+			 cocos/editor-support/spine/ClippingAttachment.cpp
+			 cocos/editor-support/spine/ClippingAttachment.h
+			 cocos/editor-support/spine/Color.h
+			 cocos/editor-support/spine/ColorTimeline.cpp
+			 cocos/editor-support/spine/ColorTimeline.h
+			 cocos/editor-support/spine/Constraint.cpp
+			 cocos/editor-support/spine/Constraint.h
+			 cocos/editor-support/spine/ConstraintData.cpp
+			 cocos/editor-support/spine/ConstraintData.h
+			 cocos/editor-support/spine/ContainerUtil.h
+			 cocos/editor-support/spine/CurveTimeline.cpp
+			 cocos/editor-support/spine/CurveTimeline.h
+			 cocos/editor-support/spine/Debug.h
+			 cocos/editor-support/spine/DeformTimeline.cpp
+			 cocos/editor-support/spine/DeformTimeline.h
+			 cocos/editor-support/spine/dll.h
+			 cocos/editor-support/spine/DrawOrderTimeline.cpp
+			 cocos/editor-support/spine/DrawOrderTimeline.h
+			 cocos/editor-support/spine/Event.cpp
+			 cocos/editor-support/spine/Event.h
+			 cocos/editor-support/spine/EventData.cpp
+			 cocos/editor-support/spine/EventData.h
+			 cocos/editor-support/spine/EventTimeline.cpp
+			 cocos/editor-support/spine/EventTimeline.h
+			 cocos/editor-support/spine/Extension.cpp
+			 cocos/editor-support/spine/Extension.h
+			 cocos/editor-support/spine/HashMap.h
+			 cocos/editor-support/spine/HasRendererObject.h
+			 cocos/editor-support/spine/IkConstraint.cpp
+			 cocos/editor-support/spine/IkConstraint.h
+			 cocos/editor-support/spine/IkConstraintData.cpp
+			 cocos/editor-support/spine/IkConstraintData.h
+			 cocos/editor-support/spine/IkConstraintTimeline.cpp
+			 cocos/editor-support/spine/IkConstraintTimeline.h
+			 cocos/editor-support/spine/Json.cpp
+			 cocos/editor-support/spine/Json.h
+			 cocos/editor-support/spine/LinkedMesh.cpp
+			 cocos/editor-support/spine/LinkedMesh.h
+			 cocos/editor-support/spine/MathUtil.cpp
+			 cocos/editor-support/spine/MathUtil.h
+			 cocos/editor-support/spine/MeshAttachment.cpp
+			 cocos/editor-support/spine/MeshAttachment.h
+			 cocos/editor-support/spine/MixBlend.h
+			 cocos/editor-support/spine/MixDirection.h
+			 cocos/editor-support/spine/PathAttachment.cpp
+			 cocos/editor-support/spine/PathAttachment.h
+			 cocos/editor-support/spine/PathConstraint.cpp
+			 cocos/editor-support/spine/PathConstraint.h
+			 cocos/editor-support/spine/PathConstraintData.cpp
+			 cocos/editor-support/spine/PathConstraintData.h
+			 cocos/editor-support/spine/PathConstraintMixTimeline.cpp
+			 cocos/editor-support/spine/PathConstraintMixTimeline.h
+			 cocos/editor-support/spine/PathConstraintPositionTimeline.cpp
+			 cocos/editor-support/spine/PathConstraintPositionTimeline.h
+			 cocos/editor-support/spine/PathConstraintSpacingTimeline.cpp
+			 cocos/editor-support/spine/PathConstraintSpacingTimeline.h
+			 cocos/editor-support/spine/PointAttachment.cpp
+			 cocos/editor-support/spine/PointAttachment.h
+			 cocos/editor-support/spine/Pool.h
+			 cocos/editor-support/spine/PositionMode.h
+			 cocos/editor-support/spine/RegionAttachment.cpp
+			 cocos/editor-support/spine/RegionAttachment.h
+			 cocos/editor-support/spine/RotateMode.h
+			 cocos/editor-support/spine/RotateTimeline.cpp
+			 cocos/editor-support/spine/RotateTimeline.h
+			 cocos/editor-support/spine/RTTI.cpp
+			 cocos/editor-support/spine/RTTI.h
+			 cocos/editor-support/spine/ScaleTimeline.cpp
+			 cocos/editor-support/spine/ScaleTimeline.h
+			 cocos/editor-support/spine/ShearTimeline.cpp
+			 cocos/editor-support/spine/ShearTimeline.h
+			 cocos/editor-support/spine/Skeleton.cpp
+			 cocos/editor-support/spine/Skeleton.h
+			 cocos/editor-support/spine/SkeletonBinary.cpp
+			 cocos/editor-support/spine/SkeletonBinary.h
+			 cocos/editor-support/spine/SkeletonBounds.cpp
+			 cocos/editor-support/spine/SkeletonBounds.h
+			 cocos/editor-support/spine/SkeletonClipping.cpp
+			 cocos/editor-support/spine/SkeletonClipping.h
+			 cocos/editor-support/spine/SkeletonData.cpp
+			 cocos/editor-support/spine/SkeletonData.h
+			 cocos/editor-support/spine/SkeletonJson.cpp
+			 cocos/editor-support/spine/SkeletonJson.h
+			 cocos/editor-support/spine/Skin.cpp
+			 cocos/editor-support/spine/Skin.h
+			 cocos/editor-support/spine/Slot.cpp
+			 cocos/editor-support/spine/Slot.h
+			 cocos/editor-support/spine/SlotData.cpp
+			 cocos/editor-support/spine/SlotData.h
+			 cocos/editor-support/spine/SpacingMode.h
+			 cocos/editor-support/spine/spine.h
+			 cocos/editor-support/spine/SpineObject.cpp
+			 cocos/editor-support/spine/SpineObject.h
+			 cocos/editor-support/spine/SpineString.h
+			 cocos/editor-support/spine/TextureLoader.cpp
+			 cocos/editor-support/spine/TextureLoader.h
+			 cocos/editor-support/spine/Timeline.cpp
+			 cocos/editor-support/spine/Timeline.h
+			 cocos/editor-support/spine/TimelineType.h
+			 cocos/editor-support/spine/TransformConstraint.cpp
+			 cocos/editor-support/spine/TransformConstraint.h
+			 cocos/editor-support/spine/TransformConstraintData.cpp
+			 cocos/editor-support/spine/TransformConstraintData.h
+			 cocos/editor-support/spine/TransformConstraintTimeline.cpp
+			 cocos/editor-support/spine/TransformConstraintTimeline.h
+			 cocos/editor-support/spine/TransformMode.h
+			 cocos/editor-support/spine/TranslateTimeline.cpp
+			 cocos/editor-support/spine/TranslateTimeline.h
+			 cocos/editor-support/spine/Triangulator.cpp
+			 cocos/editor-support/spine/Triangulator.h
+			 cocos/editor-support/spine/TwoColorTimeline.cpp
+			 cocos/editor-support/spine/TwoColorTimeline.h
+			 cocos/editor-support/spine/Updatable.cpp
+			 cocos/editor-support/spine/Updatable.h
+			 cocos/editor-support/spine/Vector.h
+			 cocos/editor-support/spine/VertexAttachment.cpp
+			 cocos/editor-support/spine/VertexAttachment.h
+			 cocos/editor-support/spine/VertexEffect.cpp
+			 cocos/editor-support/spine/VertexEffect.h
+			 cocos/editor-support/spine/Vertices.h
+			 Cocos/editor-support/spine-creator-support/AttachmentVertices.cpp
+			 Cocos/editor-support/spine-creator-support/AttachmentVertices.h
+			 Cocos/editor-support/spine-creator-support/SkeletonAnimation.cpp
+			 Cocos/editor-support/spine-creator-support/SkeletonAnimation.h
+			 Cocos/editor-support/spine-creator-support/SkeletonCache.cpp
+			 Cocos/editor-support/spine-creator-support/SkeletonCache.h
+			 Cocos/editor-support/spine-creator-support/SkeletonCacheAnimation.cpp
+			 Cocos/editor-support/spine-creator-support/SkeletonCacheAnimation.h
+			 Cocos/editor-support/spine-creator-support/SkeletonCacheMgr.cpp
+			 Cocos/editor-support/spine-creator-support/SkeletonCacheMgr.h
+			 Cocos/editor-support/spine-creator-support/SkeletonDataMgr.cpp
+			 Cocos/editor-support/spine-creator-support/SkeletonDataMgr.h
+			 Cocos/editor-support/spine-creator-support/SkeletonRenderer.cpp
+			 Cocos/editor-support/spine-creator-support/SkeletonRenderer.h
+			 Cocos/editor-support/spine-creator-support/spine-cocos2dx.cpp
+			 Cocos/editor-support/spine-creator-support/spine-cocos2dx.h
+			 Cocos/editor-support/spine-creator-support/VertexEffectDelegate.cpp
+			 Cocos/editor-support/spine-creator-support/VertexEffectDelegate.h
+		)
+	endif()
+endif()
+
 list(APPEND COCOS2D_SOURCE_LIST ${CC_EXTERNAL_SROUCES})
 
 add_library(cocos2d ${COCOS2D_SOURCE_LIST})
@@ -1357,6 +1661,8 @@ target_compile_definitions(cocos2d PUBLIC
     $<IF:$<BOOL:${USE_SPINE}>,USE_SPINE=1,USE_SPINE=0>
     $<IF:$<BOOL:${USE_DRAGONBONES}>,USE_DRAGONBONES=1,USE_DRAGONBONES=0>
     $<$<BOOL:${USE_SE_JSC}>:SCRIPT_ENGINE_TYPE=3>
+    $<IF:$<BOOL:${USE_DRAGONBONES}>,USE_DRAGONBONES=1,USE_DRAGONBONES=0>
+    $<IF:$<BOOL:${USE_SPINE}>,USE_SPINE=1,USE_SPINE=0>
     $<$<CONFIG:Debug>:CC_DEBUG=1>
 )
 
@@ -1398,8 +1704,8 @@ target_include_directories(cocos2d
         ${CWD}/cocos/renderer
         ${CWD}/cocos/platform
         ${CWD}/cocos/renderer/core
-        ${CWD}/external/sources/khronos
         ${CWD}/cocos/editor-support
+        ${CWD}/external/sources/khronos
         $<$<BOOL:USE_SE_JSC>:${CWD}/cocos/bindings/jswrapper>
     PRIVATE
         ${CC_EXTERNAL_PRIVATE_INCLUDES}
