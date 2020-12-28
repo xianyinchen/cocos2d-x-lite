@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2018 DragonBones team and other contributors
+ * Copyright (c) 2012-2020 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,66 +20,55 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 #include "dragonbones-creator-support/CCTextureAtlasData.h"
 
 using namespace cc;
 
 DRAGONBONES_NAMESPACE_BEGIN
-void CCTextureAtlasData::_onClear()
-{
+
+void CCTextureAtlasData::_onClear() {
     TextureAtlasData::_onClear();
 
-    if (_renderTexture != nullptr)
-    {
+    if (_renderTexture != nullptr) {
         _renderTexture->release();
         _renderTexture = nullptr;
     }
 }
 
-TextureData* CCTextureAtlasData::createTexture() const
-{
-    return (TextureData*)BaseObject::borrowObject<CCTextureData>();
+TextureData *CCTextureAtlasData::createTexture() const {
+    return (TextureData *)BaseObject::borrowObject<CCTextureData>();
 }
 
-void CCTextureAtlasData::setRenderTexture(middleware::Texture2D* value)
-{
-    if (_renderTexture == value) 
-    {
+void CCTextureAtlasData::setRenderTexture(middleware::Texture2D *value) {
+    if (_renderTexture == value) {
         return;
     }
 
     _renderTexture = value;
 
-    if (_renderTexture != nullptr) 
-    {
+    if (_renderTexture != nullptr) {
         _renderTexture->retain();
 
-        for (const auto& pair : textures) 
-        {
-            const auto textureData = static_cast<CCTextureData*>(pair.second);
+        for (const auto &pair : textures) {
+            const auto textureData = static_cast<CCTextureData *>(pair.second);
 
-            if (textureData->spriteFrame == nullptr)
-            {
+            if (textureData->spriteFrame == nullptr) {
                 cc::Rect rect(
                     textureData->region.x, textureData->region.y,
                     textureData->rotated ? textureData->region.height : textureData->region.width,
-                    textureData->rotated ? textureData->region.width : textureData->region.height
-                );
+                    textureData->rotated ? textureData->region.width : textureData->region.height);
                 cc::Vec2 offset(0.0f, 0.0f);
                 cc::Size originSize(rect.size.width, rect.size.height);
                 textureData->spriteFrame = middleware::SpriteFrame::createWithTexture(_renderTexture, rect, textureData->rotated, offset, originSize); // TODO multiply textureAtlas
                 textureData->spriteFrame->retain();
             }
         }
-    }
-    else 
-    {
-        for (const auto& pair : textures)
-        {
-            const auto textureData = static_cast<CCTextureData*>(pair.second);
+    } else {
+        for (const auto &pair : textures) {
+            const auto textureData = static_cast<CCTextureData *>(pair.second);
 
-            if (textureData->spriteFrame != nullptr)
-            {
+            if (textureData->spriteFrame != nullptr) {
                 textureData->spriteFrame->release();
                 textureData->spriteFrame = nullptr;
             }
@@ -87,14 +76,13 @@ void CCTextureAtlasData::setRenderTexture(middleware::Texture2D* value)
     }
 }
 
-void CCTextureData::_onClear()
-{
+void CCTextureData::_onClear() {
     TextureData::_onClear();
 
-    if (spriteFrame != nullptr)
-    {
+    if (spriteFrame != nullptr) {
         spriteFrame->release();
         spriteFrame = nullptr;
     }
 }
+
 DRAGONBONES_NAMESPACE_END

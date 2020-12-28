@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2018 DragonBones team and other contributors
+ * Copyright (c) 2012-2020 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -9,10 +9,10 @@
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -20,12 +20,13 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 #ifndef DRAGONBONES_CC_FACTORY_H
 #define DRAGONBONES_CC_FACTORY_H
 
-#include "dragonbones/DragonBonesHeaders.h"
-#include "dragonbones-creator-support/CCArmatureDisplay.h"
 #include "MiddlewareManager.h"
+#include "dragonbones-creator-support/CCArmatureDisplay.h"
+#include "dragonbones/DragonBonesHeaders.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -41,20 +42,18 @@ class CCTextureAtlasData;
  * @version DragonBones 3.0
  * @language zh_CN
  */
-class CCFactory : public BaseFactory, public cc::middleware::IMiddleware
-{
+class CCFactory : public BaseFactory, public cc::middleware::IMiddleware {
     DRAGONBONES_DISALLOW_COPY_AND_ASSIGN(CCFactory)
 
 private:
-    static DragonBones* _dragonBonesInstance;
-    static CCFactory* _factory;
+    static DragonBones *_dragonBonesInstance;
+    static CCFactory *_factory;
 
 public:
-    static bool isInit()
-    {
+    static bool isInit() {
         return _factory != nullptr;
     }
-    
+
     /**
      * A global factory instance that can be used directly.
      * @version DragonBones 4.7
@@ -65,31 +64,26 @@ public:
      * @version DragonBones 4.7
      * @language zh_CN
      */
-    static CCFactory* getFactory()
-    {
-        if (CCFactory::_factory == nullptr) 
-        {
+    static CCFactory *getFactory() {
+        if (CCFactory::_factory == nullptr) {
             CCFactory::_factory = new CCFactory();
         }
 
         return CCFactory::_factory;
     }
-    
-    static void destroyFactory()
-    {
-        if (_dragonBonesInstance)
-        {
+
+    static void destroyFactory() {
+        if (_dragonBonesInstance) {
             delete _dragonBonesInstance;
             _dragonBonesInstance = nullptr;
         }
-        
-        if (_factory)
-        {
+
+        if (_factory) {
             delete _factory;
             _factory = nullptr;
         }
     }
-    
+
 protected:
     std::string _prevPath;
 
@@ -97,11 +91,8 @@ public:
     /**
      * @inheritDoc
      */
-    CCFactory() :
-        _prevPath()
-    {
-        if (_dragonBonesInstance == nullptr)
-        {
+    CCFactory() : _prevPath() {
+        if (_dragonBonesInstance == nullptr) {
             const auto eventManager = CCArmatureDisplay::create();
             eventManager->retain();
 
@@ -112,42 +103,38 @@ public:
 
         _dragonBones = _dragonBonesInstance;
     }
-    
-    virtual void update(float dt) override
-    {
+
+    virtual void update(float dt) override {
         _dragonBonesInstance->advanceTime(dt);
     }
-    
-    virtual void render(float dt) override
-    {
+
+    virtual void render(float dt) override {
         _dragonBonesInstance->render();
     }
 
     virtual uint32_t getRenderOrder() const override { return 0; }
-    
+
     /**
      * @note When script engine clean up is trigger,will stop dragonbones timer.
      */
-    void stopSchedule()
-    {
+    void stopSchedule() {
         cc::middleware::MiddlewareManager::getInstance()->removeTimer(this);
     }
-    
+
     /**
      * @note Destructor call by jsb_dragonbones_manual,when script engine clean up is trigger.
      */
-    virtual ~CCFactory() 
-    {
+    virtual ~CCFactory() {
         clear(false);
     }
 
 protected:
-    virtual TextureAtlasData* _buildTextureAtlasData(TextureAtlasData* textureAtlasData, void* textureAtlas) const override;
-    virtual Armature* _buildArmature(const BuildArmaturePackage& dataPackage) const override;
-    virtual Slot* _buildSlot(const BuildArmaturePackage& dataPackage, const SlotData* slotData, Armature* armature) const override;
+    virtual TextureAtlasData *_buildTextureAtlasData(TextureAtlasData *textureAtlasData, void *textureAtlas) const override;
+    virtual Armature *_buildArmature(const BuildArmaturePackage &dataPackage) const override;
+    virtual Slot *_buildSlot(const BuildArmaturePackage &dataPackage, const SlotData *slotData, Armature *armature) const override;
 
 public:
-    virtual DragonBonesData* loadDragonBonesData(const std::string& filePath, const std::string& name = "", float scale = 1.0f);
+    virtual DragonBonesData *loadDragonBonesData(const std::string &filePath, const std::string &name = "", float scale = 1.0f);
     /**
      * - Load and parse a texture atlas data and texture from the local and cache them to the factory.
      * @param  filePath - The file path of texture atlas data.
@@ -174,7 +161,7 @@ public:
      * </pre>
      * @language zh_CN
      */
-    virtual TextureAtlasData* loadTextureAtlasData(const std::string& filePath, const std::string& name = "", float scale = 1.0f);
+    virtual TextureAtlasData *loadTextureAtlasData(const std::string &filePath, const std::string &name = "", float scale = 1.0f);
     /**
      * - Create a armature from cached DragonBonesData instances and TextureAtlasData instances, then use the {@link #clock} to update it.
      * The difference is that the armature created by {@link #buildArmature} is not WorldClock instance update.
@@ -203,7 +190,7 @@ public:
      * </pre>
      * @language zh_CN
      */
-    virtual CCArmatureDisplay* buildArmatureDisplay(const std::string& armatureName, const std::string& dragonBonesName = "", const std::string& skinName = "", const std::string& textureAtlasName = "") const;
+    virtual CCArmatureDisplay *buildArmatureDisplay(const std::string &armatureName, const std::string &dragonBonesName = "", const std::string &skinName = "", const std::string &textureAtlasName = "") const;
     /**
      * - A global sound event manager.
      * Sound events can be listened to uniformly from the manager.
@@ -216,9 +203,8 @@ public:
      * @version DragonBones 4.5
      * @language zh_CN
      */
-    virtual CCArmatureDisplay* getSoundEventManager() const
-    {
-        return dynamic_cast<CCArmatureDisplay*>(static_cast<IArmatureProxy*>(_dragonBones->getEventManager()));
+    virtual CCArmatureDisplay *getSoundEventManager() const {
+        return dynamic_cast<CCArmatureDisplay *>(static_cast<IArmatureProxy *>(_dragonBones->getEventManager()));
     }
 
     /**
@@ -231,42 +217,37 @@ public:
      * @deprecated
      * @language zh_CN
      */
-    static WorldClock* getClock()
-    {
+    static WorldClock *getClock() {
         return _dragonBonesInstance->getClock();
     }
-    
-    void add(Armature* armature)
-    {
+
+    void add(Armature *armature) {
         _dragonBonesInstance->getClock()->add(armature);
     }
-    
-    void remove(Armature* armature)
-    {
+
+    void remove(Armature *armature) {
         _dragonBonesInstance->getClock()->remove(armature);
     }
-    
-    void setTimeScale(float timeScale)
-    {
+
+    void setTimeScale(float timeScale) {
         _dragonBonesInstance->getClock()->timeScale = timeScale;
     }
-    
-	float getTimeScale()
-	{
-		return _dragonBonesInstance->getClock()->timeScale;
-	}
 
-	DragonBones* getDragonBones()
-	{
-		return _dragonBonesInstance;
-	}
+    float getTimeScale() {
+        return _dragonBonesInstance->getClock()->timeScale;
+    }
 
-    void removeTextureAtlasDataByIndex(const std::string& name, int textureIndex);
-    void removeDragonBonesDataByUUID(const std::string& uuid, bool disposeData = true);
-    
-    CCTextureAtlasData* getTextureAtlasDataByIndex(const std::string& name, int textureIndex) const;
-    DragonBonesData* parseDragonBonesDataByPath(const std::string& filePath, const std::string& name = "", float scale = 1.0f);
+    DragonBones *getDragonBones() {
+        return _dragonBonesInstance;
+    }
+
+    void removeTextureAtlasDataByIndex(const std::string &name, int textureIndex);
+    void removeDragonBonesDataByUUID(const std::string &uuid, bool disposeData = true);
+
+    CCTextureAtlasData *getTextureAtlasDataByIndex(const std::string &name, int textureIndex) const;
+    DragonBonesData *parseDragonBonesDataByPath(const std::string &filePath, const std::string &name = "", float scale = 1.0f);
 };
 
 DRAGONBONES_NAMESPACE_END
+
 #endif // DRAGONBONES_CC_FACTORY_H

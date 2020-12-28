@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2012-2018 DragonBones team and other contributors
+ * Copyright (c) 2012-2020 DragonBones team and other contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -20,15 +20,16 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+
 #include "dragonbones-creator-support/CCArmatureDisplay.h"
-#include "dragonbones-creator-support/CCSlot.h"
 #include "MiddlewareMacro.h"
 #include "SharedBufferManager.h"
 #include "base/TypeDef.h"
 #include "base/memory/Memory.h"
+#include "core/gfx/GFXDef.h"
+#include "dragonbones-creator-support/CCSlot.h"
 #include "math/Math.h"
 #include "math/Vec3.h"
-#include "core/gfx/GFXDef.h"
 
 USING_NS_MW;
 using namespace cc;
@@ -36,7 +37,6 @@ using namespace cc::gfx;
 
 static const std::string techStage = "opaque";
 static const std::string textureKey = "texture";
-
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -50,16 +50,15 @@ CCArmatureDisplay *CCArmatureDisplay::create() {
     return displayContainer;
 }
 
-CCArmatureDisplay::CCArmatureDisplay()
-{
-	_sharedBufferOffset = new IOTypedArray(se::Object::TypedArrayType::UINT32, sizeof(uint32_t) * 2);
+CCArmatureDisplay::CCArmatureDisplay() {
+    _sharedBufferOffset = new IOTypedArray(se::Object::TypedArrayType::UINT32, sizeof(uint32_t) * 2);
 
-	// store render order(1), world matrix(16)
-	_paramsBuffer = new IOTypedArray(se::Object::TypedArrayType::FLOAT32, sizeof(float) * 17);
-	// set render order to 0
-	_paramsBuffer->writeFloat32(0);
-	// set world transform to identity
-	_paramsBuffer->writeBytes((const char *)&cc::Mat4::IDENTITY, sizeof(float) * 16);
+    // store render order(1), world matrix(16)
+    _paramsBuffer = new IOTypedArray(se::Object::TypedArrayType::FLOAT32, sizeof(float) * 17);
+    // set render order to 0
+    _paramsBuffer->writeFloat32(0);
+    // set world transform to identity
+    _paramsBuffer->writeBytes((const char *)&cc::Mat4::IDENTITY, sizeof(float) * 16);
 }
 
 CCArmatureDisplay::~CCArmatureDisplay() {
@@ -100,12 +99,12 @@ void CCArmatureDisplay::dbClear() {
 void CCArmatureDisplay::dbUpdate() {}
 
 void CCArmatureDisplay::dbRender() {
-	_sharedBufferOffset->reset();
-	_sharedBufferOffset->clear();
-    
+    _sharedBufferOffset->reset();
+    _sharedBufferOffset->clear();
+
     if (this->_armature->getParent())
         return;
-    
+
     auto mgr = MiddlewareManager::getInstance();
     if (!mgr->isRendering) return;
 
@@ -133,7 +132,7 @@ void CCArmatureDisplay::dbRender() {
 
     // render not ready
     auto paramsBuffer = _paramsBuffer->getBuffer();
-    float renderOrder = *(float*)paramsBuffer;
+    float renderOrder = *(float *)paramsBuffer;
     if (renderOrder < 0) {
         return;
     }
@@ -150,7 +149,7 @@ void CCArmatureDisplay::dbRender() {
     // Traverse all aramture to fill vertex and index buffer.
     traverseArmature(_armature);
 
-	renderInfo->writeUint32(materialLenOffset, _materialLen);
+    renderInfo->writeUint32(materialLenOffset, _materialLen);
     if (_preISegWritePos != -1) {
         renderInfo->writeUint32(_preISegWritePos, _curISegLen);
     }
@@ -249,22 +248,20 @@ void CCArmatureDisplay::traverseArmature(Armature *armature, float parentOpacity
     IOBuffer &ib = mb->getIB();
 
     float realOpacity = _nodeColor.a;
-	auto renderMgr = mgr->getRenderInfoMgr();
-	auto renderInfo = renderMgr->getBuffer();
-	if (!renderInfo) return;
+    auto renderMgr = mgr->getRenderInfoMgr();
+    auto renderInfo = renderMgr->getBuffer();
+    if (!renderInfo) return;
 
-	auto attachMgr = mgr->getAttachInfoMgr();
-	auto attachInfo = attachMgr->getBuffer();
-	if (!attachInfo) return;
+    auto attachMgr = mgr->getAttachInfoMgr();
+    auto attachInfo = attachMgr->getBuffer();
+    if (!attachInfo) return;
 
-	// range [0.0, 255.0]
-	float r, g, b, a;
-    CCSlot* slot = nullptr;
-	middleware::Texture2D* texture = nullptr;
+    // range [0.0, 255.0]
+    float r, g, b, a;
+    CCSlot *slot = nullptr;
+    middleware::Texture2D *texture = nullptr;
     int isFull = 0;
 
- 
-  
     auto flush = [&]() {
         // fill pre segment count field
         if (_preISegWritePos != -1) {
@@ -307,7 +304,7 @@ void CCArmatureDisplay::traverseArmature(Armature *armature, float parentOpacity
         // fill new index offset
         renderInfo->writeUint32((uint32_t)ib.getCurPos() / sizeof(unsigned short));
 
-		// save new segment indices count pos field
+        // save new segment indices count pos field
         _preISegWritePos = (int)renderInfo->getCurPos();
 
         // reserve indice segamentation count
@@ -399,7 +396,7 @@ void CCArmatureDisplay::traverseArmature(Armature *armature, float parentOpacity
         _curISegLen += triangles.indexCount;
     }
 }
- 
+
 bool CCArmatureDisplay::hasDBEventListener(const std::string &type) const {
     auto it = _listenerIDMap.find(type);
     return it != _listenerIDMap.end();
@@ -435,10 +432,10 @@ se_object_ptr CCArmatureDisplay::getDebugData() const {
 }
 
 void CCArmatureDisplay::setColor(float r, float g, float b, float a) {
-	_nodeColor.r = r / 255.0f;
-	_nodeColor.g = g / 255.0f;
-	_nodeColor.b = b / 255.0f;
-	_nodeColor.a = a / 255.0f;
+    _nodeColor.r = r / 255.0f;
+    _nodeColor.g = g / 255.0f;
+    _nodeColor.b = b / 255.0f;
+    _nodeColor.a = a / 255.0f;
 }
 
 se_object_ptr CCArmatureDisplay::getSharedBufferOffset() const {

@@ -1,37 +1,35 @@
 /**
-* The MIT License (MIT)
-*
-* Copyright (c) 2012-2018 DragonBones team and other contributors
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy of
-* this software and associated documentation files (the "Software"), to deal in
-* the Software without restriction, including without limitation the rights to
-* use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-* the Software, and to permit persons to whom the Software is furnished to do so,
-* subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-* FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-* COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-* IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-* CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2020 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #include "CCArmatureCacheDisplay.h"
-#include "MiddlewareManager.h"
 #include "ArmatureCacheMgr.h"
 #include "CCFactory.h"
+#include "MiddlewareManager.h"
 #include "SharedBufferManager.h"
 #include "base/TypeDef.h"
 #include "base/memory/Memory.h"
-#include "math/Math.h"
 #include "core/gfx/GFXDef.h"
-
-
+#include "math/Math.h"
 
 using namespace cc;
 using namespace cc::gfx;
@@ -73,20 +71,18 @@ CCArmatureCacheDisplay::CCArmatureCacheDisplay(const std::string &armatureName, 
 CCArmatureCacheDisplay::~CCArmatureCacheDisplay() {
     dispose();
 
-	if (_sharedBufferOffset) {
-		delete _sharedBufferOffset;
-		_sharedBufferOffset = nullptr;
-	}
+    if (_sharedBufferOffset) {
+        delete _sharedBufferOffset;
+        _sharedBufferOffset = nullptr;
+    }
 
-	if (_paramsBuffer) {
-		delete _paramsBuffer;
-		_paramsBuffer = nullptr;
-	}
+    if (_paramsBuffer) {
+        delete _paramsBuffer;
+        _paramsBuffer = nullptr;
+    }
 }
 
 void CCArmatureCacheDisplay::dispose() {
-
-
 
     if (_armatureCache) {
         _armatureCache->release();
@@ -152,8 +148,8 @@ void CCArmatureCacheDisplay::render(float dt) {
     auto mgr = MiddlewareManager::getInstance();
     if (!mgr->isRendering) return;
 
-	auto& segments = frameData->getSegments();
-	auto& colors = frameData->getColors();
+    auto &segments = frameData->getSegments();
+    auto &colors = frameData->getColors();
 
     _sharedBufferOffset->reset();
     _sharedBufferOffset->clear();
@@ -176,8 +172,8 @@ void CCArmatureCacheDisplay::render(float dt) {
     // write border
     renderInfo->writeUint32(0xffffffff);
 
-	// matieral len
-	renderInfo->writeUint32(segments.size());
+    // matieral len
+    renderInfo->writeUint32(segments.size());
 
     if (segments.size() == 0 || colors.size() == 0) return;
 
@@ -264,7 +260,7 @@ void CCArmatureCacheDisplay::render(float dt) {
             default:
                 curBlendSrc = (int)(_premultipliedAlpha ? BlendFactor::ONE : BlendFactor::SRC_ALPHA);
                 curBlendDst = (int)BlendFactor::ONE_MINUS_SRC_ALPHA;
-				break;
+                break;
         }
         // fill new blend src and dst
         renderInfo->writeUint32(curBlendSrc);
@@ -317,134 +313,129 @@ void CCArmatureCacheDisplay::render(float dt) {
         }
         srcIndexBytesOffset += indexBytes;
 
-		// fill new index and vertex buffer id
-		auto bufferIndex = mb->getBufferPos();
-		renderInfo->writeUint32(bufferIndex);
+        // fill new index and vertex buffer id
+        auto bufferIndex = mb->getBufferPos();
+        renderInfo->writeUint32(bufferIndex);
 
-		// fill new index offset
-		renderInfo->writeUint32(dstIndexOffset);
-		// fill new indice segamentation count
-		renderInfo->writeUint32(segment->indexCount);
-    }
-    
-	if (_useAttach) {
-		auto &bonesData = frameData->getBones();
-		auto boneCount = frameData->getBoneCount();
-
-		for (int i = 0, n = boneCount; i < n; i++) {
-			auto bone = bonesData[i];
-			attachInfo->checkSpace(sizeof(cc::Mat4), true);
-			attachInfo->writeBytes((const char *)&bone->globalTransformMatrix, sizeof(cc::Mat4));
-		}
-	}
-}
-    void CCArmatureCacheDisplay::beginSchedule() {
-        MiddlewareManager::getInstance()->addTimer(this);
+        // fill new index offset
+        renderInfo->writeUint32(dstIndexOffset);
+        // fill new indice segamentation count
+        renderInfo->writeUint32(segment->indexCount);
     }
 
-    void CCArmatureCacheDisplay::stopSchedule() {
-        MiddlewareManager::getInstance()->removeTimer(this);
+    if (_useAttach) {
+        auto &bonesData = frameData->getBones();
+        auto boneCount = frameData->getBoneCount();
 
-        if (_sharedBufferOffset) {
-            _sharedBufferOffset->reset();
-            _sharedBufferOffset->clear();
+        for (int i = 0, n = boneCount; i < n; i++) {
+            auto bone = bonesData[i];
+            attachInfo->checkSpace(sizeof(cc::Mat4), true);
+            attachInfo->writeBytes((const char *)&bone->globalTransformMatrix, sizeof(cc::Mat4));
         }
     }
+}
+void CCArmatureCacheDisplay::beginSchedule() {
+    MiddlewareManager::getInstance()->addTimer(this);
+}
 
-    void CCArmatureCacheDisplay::onEnable() {
-        beginSchedule();
+void CCArmatureCacheDisplay::stopSchedule() {
+    MiddlewareManager::getInstance()->removeTimer(this);
+
+    if (_sharedBufferOffset) {
+        _sharedBufferOffset->reset();
+        _sharedBufferOffset->clear();
     }
+}
 
-    void CCArmatureCacheDisplay::onDisable() {
-        stopSchedule();
-    }
+void CCArmatureCacheDisplay::onEnable() {
+    beginSchedule();
+}
 
-Armature* CCArmatureCacheDisplay::getArmature() const
-{
+void CCArmatureCacheDisplay::onDisable() {
+    stopSchedule();
+}
+
+Armature *CCArmatureCacheDisplay::getArmature() const {
     auto armatureDisplay = _armatureCache->getArmatureDisplay();
     return armatureDisplay->getArmature();
 }
 
-    Animation *CCArmatureCacheDisplay::getAnimation() const {
-        auto armature = getArmature();
-        return armature->getAnimation();
+Animation *CCArmatureCacheDisplay::getAnimation() const {
+    auto armature = getArmature();
+    return armature->getAnimation();
+}
+
+void CCArmatureCacheDisplay::playAnimation(const std::string &name, int playTimes) {
+    _playTimes = playTimes;
+    _animationName = name;
+    _animationData = _armatureCache->buildAnimationData(_animationName);
+    _isAniComplete = false;
+    _accTime = 0.0f;
+    _playCount = 0;
+    _curFrameIndex = 0;
+}
+
+void CCArmatureCacheDisplay::addDBEventListener(const std::string &type) {
+    _listenerIDMap[type] = true;
+}
+
+void CCArmatureCacheDisplay::removeDBEventListener(const std::string &type) {
+    auto it = _listenerIDMap.find(type);
+    if (it != _listenerIDMap.end()) {
+        _listenerIDMap.erase(it);
+    }
+}
+
+void CCArmatureCacheDisplay::dispatchDBEvent(const std::string &type, EventObject *value) {
+    auto it = _listenerIDMap.find(type);
+    if (it == _listenerIDMap.end()) {
+        return;
     }
 
-
-    void CCArmatureCacheDisplay::playAnimation(const std::string &name, int playTimes) {
-        _playTimes = playTimes;
-        _animationName = name;
-        _animationData = _armatureCache->buildAnimationData(_animationName);
-        _isAniComplete = false;
-        _accTime = 0.0f;
-        _playCount = 0;
-        _curFrameIndex = 0;
+    if (_dbEventCallback) {
+        _dbEventCallback(value);
     }
+}
 
-    void CCArmatureCacheDisplay::addDBEventListener(const std::string &type) {
-        _listenerIDMap[type] = true;
+void CCArmatureCacheDisplay::updateAnimationCache(const std::string &animationName) {
+    _armatureCache->resetAnimationData(animationName);
+}
+
+void CCArmatureCacheDisplay::updateAllAnimationCache() {
+    _armatureCache->resetAllAnimationData();
+}
+
+void CCArmatureCacheDisplay::setColor(float r, float g, float b, float a) {
+    _nodeColor.r = r / 255.0f;
+    _nodeColor.g = g / 255.0f;
+    _nodeColor.b = b / 255.0f;
+    _nodeColor.a = a / 255.0f;
+}
+
+void CCArmatureCacheDisplay::setAttachEnabled(bool enabled) {
+    _useAttach = enabled;
+}
+
+se_object_ptr CCArmatureCacheDisplay::getSharedBufferOffset() const {
+    if (_sharedBufferOffset) {
+        return _sharedBufferOffset->getTypeArray();
     }
+    return nullptr;
+}
 
-    void CCArmatureCacheDisplay::removeDBEventListener(const std::string &type) {
-        auto it = _listenerIDMap.find(type);
-        if (it != _listenerIDMap.end()) {
-            _listenerIDMap.erase(it);
-        }
+se_object_ptr CCArmatureCacheDisplay::getParamsBuffer() const {
+    if (_paramsBuffer) {
+        return _paramsBuffer->getTypeArray();
     }
+    return nullptr;
+}
 
-    void CCArmatureCacheDisplay::dispatchDBEvent(const std::string &type, EventObject *value) {
-        auto it = _listenerIDMap.find(type);
-        if (it == _listenerIDMap.end()) {
-            return;
-        }
-
-        if (_dbEventCallback) {
-            _dbEventCallback(value);
-        }
+uint32_t CCArmatureCacheDisplay::getRenderOrder() const {
+    if (_paramsBuffer) {
+        auto buffer = _paramsBuffer->getBuffer();
+        return (uint32_t)buffer[0];
     }
+    return 0;
+}
 
-    void CCArmatureCacheDisplay::updateAnimationCache(const std::string &animationName) {
-        _armatureCache->resetAnimationData(animationName);
-    }
-
-    void CCArmatureCacheDisplay::updateAllAnimationCache() {
-        _armatureCache->resetAllAnimationData();
-    }
-	
-	
-	    void CCArmatureCacheDisplay::setColor(float r, float g, float b, float a) {
-        _nodeColor.r = r / 255.0f;
-        _nodeColor.g = g / 255.0f;
-        _nodeColor.b = b / 255.0f;
-        _nodeColor.a = a / 255.0f;
-    }
-	
-    void CCArmatureCacheDisplay::setAttachEnabled(bool enabled) {
-        _useAttach = enabled;
-    }
-
-
-
-    se_object_ptr CCArmatureCacheDisplay::getSharedBufferOffset() const {
-        if (_sharedBufferOffset) {
-            return _sharedBufferOffset->getTypeArray();
-        }
-        return nullptr;
-    }
-
-    se_object_ptr CCArmatureCacheDisplay::getParamsBuffer() const {
-        if (_paramsBuffer) {
-            return _paramsBuffer->getTypeArray();
-        }
-        return nullptr;
-    }
-
-    uint32_t CCArmatureCacheDisplay::getRenderOrder() const {
-        if (_paramsBuffer) {
-            auto buffer = _paramsBuffer->getBuffer();
-            return (uint32_t)buffer[0];
-        }
-        return 0;
-    }
-
-    DRAGONBONES_NAMESPACE_END
+DRAGONBONES_NAMESPACE_END

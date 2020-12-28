@@ -1,32 +1,32 @@
 /**
-* The MIT License (MIT)
-*
-* Copyright (c) 2012-2018 DragonBones team and other contributors
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy of
-* this software and associated documentation files (the "Software"), to deal in
-* the Software without restriction, including without limitation the rights to
-* use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
-* the Software, and to permit persons to whom the Software is furnished to do so,
-* subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all
-* copies or substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-* FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-* COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-* IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-* CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2012-2020 DragonBones team and other contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #pragma once
 
-#include "dragonbones/DragonBonesHeaders.h"
-#include "base/Ref.h"
-#include "CCArmatureDisplay.h"
 #include "ArmatureCache.h"
+#include "CCArmatureDisplay.h"
+#include "base/Ref.h"
+#include "dragonbones/DragonBonesHeaders.h"
 
 DRAGONBONES_NAMESPACE_BEGIN
 
@@ -58,7 +58,7 @@ public:
 
     void setColor(float r, float g, float b, float a);
     void setBatchEnabled(bool enabled) {
-		// disable switch batch mode, force to enable batch, it may be changed in future version
+        // disable switch batch mode, force to enable batch, it may be changed in future version
         // _batch = enabled;
     }
     void setAttachEnabled(bool enabled);
@@ -103,9 +103,9 @@ private:
     ArmatureCache::AnimationData *_animationData = nullptr;
     std::map<std::string, bool> _listenerIDMap;
 
-	bool _useAttach = false;
-	bool _batch = true;
-	cc::middleware::Color4F _nodeColor = cc::middleware::Color4F::WHITE;
+    bool _useAttach = false;
+    bool _batch = true;
+    cc::middleware::Color4F _nodeColor = cc::middleware::Color4F::WHITE;
 
     bool _premultipliedAlpha = false;
     dbEventCallback _dbEventCallback = nullptr;
