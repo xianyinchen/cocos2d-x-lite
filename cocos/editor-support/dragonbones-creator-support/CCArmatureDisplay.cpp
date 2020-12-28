@@ -26,10 +26,10 @@
 #include "SharedBufferManager.h"
 #include "base/TypeDef.h"
 #include "base/memory/Memory.h"
-#include "core/gfx/GFXDef.h"
 #include "dragonbones-creator-support/CCSlot.h"
 #include "math/Math.h"
 #include "math/Vec3.h"
+#include "core/gfx/GFXDef.h"
 
 USING_NS_MW;
 using namespace cc;
