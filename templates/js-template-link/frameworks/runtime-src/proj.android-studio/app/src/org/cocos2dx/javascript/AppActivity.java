@@ -27,12 +27,47 @@ package org.cocos2dx.javascript;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
 import android.content.Intent;
 import android.content.res.Configuration;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+
 public class AppActivity extends Cocos2dxActivity {
+
+    class MSAAConfigChooser implements GLSurfaceView.EGLConfigChooser {
+        @Override
+        public EGLConfig chooseConfig(EGL10 egl,
+                                      javax.microedition.khronos.egl.EGLDisplay display) {
+            int attribs[] = {
+                    EGL10.EGL_LEVEL, 0,
+                    EGL10.EGL_RENDERABLE_TYPE, 4,  // EGL_OPENGL_ES2_BIT
+                    EGL10.EGL_COLOR_BUFFER_TYPE, EGL10.EGL_RGB_BUFFER,
+                    EGL10.EGL_RED_SIZE, 8,
+                    EGL10.EGL_GREEN_SIZE, 8,
+                    EGL10.EGL_BLUE_SIZE, 8,
+                    EGL10.EGL_ALPHA_SIZE, 0,
+                    EGL10.EGL_DEPTH_SIZE, 16,
+                    EGL10.EGL_STENCIL_SIZE, 8,
+                    EGL10.EGL_SAMPLE_BUFFERS, 1,
+                    EGL10.EGL_SAMPLES, 4,
+                    EGL10.EGL_NONE
+            };
+
+            EGLConfig[] configs = new EGLConfig[1];
+            int[] configCounts = new int[1];
+            egl.eglChooseConfig(display, attribs, configs, 1, configCounts);
+
+            if (configCounts[0] == 0) {
+                return null;
+            } else {
+                return configs[0];
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +90,7 @@ public class AppActivity extends Cocos2dxActivity {
     public Cocos2dxGLSurfaceView onCreateView() {
         Cocos2dxGLSurfaceView glSurfaceView = new Cocos2dxGLSurfaceView(this);
         // TestCpp should create stencil buffer
-        glSurfaceView.setEGLConfigChooser(5, 6, 5, 0, 16, 8);
+        glSurfaceView.setEGLConfigChooser(new MSAAConfigChooser());
         SDKWrapper.getInstance().setGLSurfaceView(glSurfaceView, this);
 
         return glSurfaceView;

@@ -446,7 +446,7 @@ void Application::onCreateView(PixelFormat& pixelformat, DepthFormat& depthForma
     pixelformat = PixelFormat::RGB565;
     depthFormat = DepthFormat::DEPTH24_STENCIL8;
 
-    multisamplingCount = 0;
+    multisamplingCount = 4;
 }
 
 namespace
