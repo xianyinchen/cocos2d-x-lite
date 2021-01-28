@@ -216,9 +216,9 @@ public class CocosActivity extends Activity implements SurfaceHolder.Callback {
         if (!mDestroyed) {
             mSurfaceHolder = holder;
             onSurfaceCreatedNative(holder.getSurface());
-
             engineInit = true;
         }
+        mSurfaceView.enableRebuildOnSizeChanged();
     }
 
     @Override
@@ -236,6 +236,7 @@ public class CocosActivity extends Activity implements SurfaceHolder.Callback {
             onSurfaceDestroyNative();
             engineInit = false;
         }
+        mSurfaceView.disableRebuildOnSizeChanged();
     }
 
     private void onLoadNativeLibraries() {

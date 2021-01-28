@@ -25,11 +25,16 @@
 package com.cocos.lib;
 
 import android.content.Context;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.FrameLayout;
 
 public class CocosSurfaceView extends SurfaceView {
     private CocosTouchHandler mTouchHandler;
+    private FrameLayout mLayoutParent = null;
+    private boolean mNeedRebuild = false;
 
     public CocosSurfaceView(Context context) {
         super(context);
@@ -38,6 +43,14 @@ public class CocosSurfaceView extends SurfaceView {
 
     private native void nativeOnSizeChanged(final int width, final int height);
 
+    public void enableRebuildOnSizeChanged() {
+        mNeedRebuild = true;
+    }
+
+    public void disableRebuildOnSizeChanged() {
+        mNeedRebuild = false;
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
@@ -45,6 +58,29 @@ public class CocosSurfaceView extends SurfaceView {
             @Override
             public void run() {
                 nativeOnSizeChanged(w, h);
+            }
+        });
+
+        if (!mNeedRebuild) {
+            return;
+        }
+
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                mLayoutParent = (FrameLayout) CocosSurfaceView.this.getParent();
+                mLayoutParent.removeView(CocosSurfaceView.this);
+            }
+        });
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mLayoutParent.post(new Runnable() {
+            @Override
+            public void run() {
+                mLayoutParent.addView(CocosSurfaceView.this);
             }
         });
     }
