@@ -57,8 +57,9 @@ NS_CC_BEGIN
 class CC_DLL GLView final
 {
 public:
-    GLView(Application *application, const std::string& name, int x, int y, int width, int height,
-           Application::PixelFormat pixelformat, Application::DepthFormat depthFormat, int multiSampleCount);
+    GLView(Application *application, const std::string& name, int x, int y, int& width, int& height,
+           Application::PixelFormat pixelformat, Application::DepthFormat depthFormat, int multiSampleCount,
+           bool fullscreen);
     ~GLView();
 
     bool windowShouldClose() const;

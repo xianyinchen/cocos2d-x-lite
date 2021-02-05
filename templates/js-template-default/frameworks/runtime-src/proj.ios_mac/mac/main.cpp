@@ -32,7 +32,7 @@ USING_NS_CC;
 
 int main(int argc, char *argv[])
 {
-    AppDelegate app(MACOS_WIN_SIZE_WIDTH, MACOS_WIN_SIZE_HEIGHT);
+    AppDelegate app(MACOS_WIN_SIZE_WIDTH, MACOS_WIN_SIZE_HEIGHT, false);
     app.start();
     return 0;
 }

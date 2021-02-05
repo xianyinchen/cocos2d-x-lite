@@ -250,12 +250,12 @@ NS_CC_BEGIN
 Application* Application::_instance = nullptr;
 std::shared_ptr<Scheduler> Application::_scheduler = nullptr;
 
-Application::Application(const std::string& name, int width, int height)
+Application::Application(const std::string& name, int width, int height, bool fullscreen)
 {
     Application::_instance = this;
     _scheduler = std::make_shared<Scheduler>();
 
-    createView(name, width, height);
+    createView(name, width, height, fullscreen);
     Configuration::getInstance();
     
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &_mainFBO);
@@ -468,7 +468,7 @@ namespace
     }
 }
 
-void Application::createView(const std::string& /*name*/, int width, int height)
+void Application::createView(const std::string& /*name*/, int& width, int& height, bool fullscreen)
 {
     PixelFormat pixelFormat = PixelFormat::RGB565;
     DepthFormat depthFormat = DepthFormat::DEPTH24_STENCIL8;

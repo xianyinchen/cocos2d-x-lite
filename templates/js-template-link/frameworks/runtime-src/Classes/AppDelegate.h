@@ -33,7 +33,7 @@
 class  AppDelegate : public cocos2d::Application
 {
 public:
-    AppDelegate(int width, int height);
+    AppDelegate(int width, int height, bool fullscreen = false);
     virtual ~AppDelegate();
     
     /**

@@ -35,7 +35,7 @@
 
 USING_NS_CC;
 
-AppDelegate::AppDelegate(int width, int height) : Application("Cocos Game", width, height)
+AppDelegate::AppDelegate(int width, int height, bool fullscreen) : Application("Cocos Game", width, height, fullscreen)
 {
 }
 

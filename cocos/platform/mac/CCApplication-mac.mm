@@ -64,11 +64,11 @@ std::shared_ptr<Scheduler> Application::_scheduler = nullptr;
 
 #define CAST_VIEW(view)    ((GLView*)view)
 
-Application::Application(const std::string& name, int width, int height)
+Application::Application(const std::string& name, int width, int height, bool fullscreen)
 {
     Application::_instance = this;
     
-    createView(name, width, height);
+    createView(name, width, height, fullscreen);
 
     Configuration::getInstance();
 
@@ -310,7 +310,7 @@ void Application::onCreateView(PixelFormat& pixelformat, DepthFormat& depthForma
     multisamplingCount = 0;
 }
 
-void Application::createView(const std::string& name, int width, int height)
+void Application::createView(const std::string& name, int& width, int& height, bool fullscreen)
 {
     int multisamplingCount = 0;
     PixelFormat pixelformat;
@@ -320,7 +320,7 @@ void Application::createView(const std::string& name, int width, int height)
                  depthFormat,
                  multisamplingCount);
 
-    _view = new GLView(this, name, 0, 0, width, height, pixelformat, depthFormat, multisamplingCount);
+    _view = new GLView(this, name, 0, 0, width, height, pixelformat, depthFormat, multisamplingCount, fullscreen);
 }
 
 std::string Application::getSystemVersion()

@@ -101,7 +101,7 @@ public:
     // This class is useful for internal usage.
     static Application* getInstance() { return _instance; }
     
-    Application(const std::string& name, int width, int height);
+    Application(const std::string& name, int width, int height, bool fullscreen);
     virtual ~Application();
     
     virtual bool applicationDidFinishLaunching();
@@ -190,7 +190,7 @@ protected:
     virtual void onCreateView(PixelFormat& pixelformat, DepthFormat& depthFormat, int& multisamplingCount);
     
 private:
-    void createView(const std::string& name, int width, int height);
+    void createView(const std::string& name, int& width, int& height, bool fullscreen);
     
     static Application* _instance;
     static std::shared_ptr<Scheduler> _scheduler;

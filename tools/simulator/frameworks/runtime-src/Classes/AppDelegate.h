@@ -35,7 +35,7 @@ The reason for implement as private inheritance is to hide some interface call b
 class  AppDelegate : public cocos2d::Application
 {
 public:
-    AppDelegate(const std::string& name, int width, int height);
+    AppDelegate(const std::string& name, int width, int height, bool fullscreen = false);
     virtual ~AppDelegate();
 
     /**

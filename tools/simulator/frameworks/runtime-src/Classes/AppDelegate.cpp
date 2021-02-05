@@ -34,7 +34,7 @@
 USING_NS_CC;
 using namespace std;
 
-AppDelegate::AppDelegate(const std::string& name, int width, int height) : Application(name, width, height)
+AppDelegate::AppDelegate(const std::string& name, int width, int height, bool fullscreen) : Application(name, width, height, fullscreen)
 {
 }
 

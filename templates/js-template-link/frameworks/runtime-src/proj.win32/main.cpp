@@ -48,7 +48,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
 #endif
 
     // create the application instance
-    AppDelegate app(WINDOWS_WIN_SIZE_WIDTH, WINDOWS_WIN_SIZE_HEIGHT);
+    AppDelegate app(WINDOWS_WIN_SIZE_WIDTH, WINDOWS_WIN_SIZE_HEIGHT, false);
     app.start();
 
 #ifdef USE_WIN32_CONSOLE

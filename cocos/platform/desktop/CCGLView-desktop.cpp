@@ -114,8 +114,9 @@ namespace
 // implement GLView
 //////////////////////////////////////////////////////////////////////////
 
-GLView::GLView(Application* application, const std::string& name, int x, int y, int width, int height,
-               Application::PixelFormat pixelformat, Application::DepthFormat depthFormat, int multisamplingCount)
+GLView::GLView(Application* application, const std::string& name, int x, int y, int& width, int& height,
+               Application::PixelFormat pixelformat, Application::DepthFormat depthFormat, int multisamplingCount,
+               bool fullscreen)
 : _application(application)
 , _mainWindow(nullptr)
 , _monitor(nullptr)
@@ -136,6 +137,14 @@ GLView::GLView(Application* application, const std::string& name, int x, int y, 
     glfwWindowHint(GLFW_DEPTH_BITS, depthInfo.depth);
     glfwWindowHint(GLFW_STENCIL_BITS, depthInfo.stencil);
     glfwWindowHint(GLFW_SAMPLES, multisamplingCount);
+    
+    if (fullscreen) {
+        _monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(_monitor);
+        width = mode->width;
+        height = mode->height;
+    }
+    
     _mainWindow = glfwCreateWindow(width, height, name.c_str(), _monitor, nullptr);
 
     if (_mainWindow == nullptr)
