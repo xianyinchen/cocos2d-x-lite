@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
+    ndkPath PROP_NDK_PATH
 
     defaultConfig {
         minSdkVersion PROP_MIN_SDK_VERSION
