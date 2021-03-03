@@ -3022,43 +3022,7 @@
 			);
 			path = v8;
 			sourceTree = "<group>";
-		};
-		1A52DB46205BCDC700350EE3 /* chakracore */ = {
-			isa = PBXGroup;
-			children = (
-				1A52DB47205BCDC700350EE3 /* Class.hpp */,
-				1A52DB48205BCDC700350EE3 /* HelperMacros.h */,
-				1A52DB49205BCDC700350EE3 /* Utils.cpp */,
-				1A52DB4A205BCDC700350EE3 /* Object.cpp */,
-				1A52DB4B205BCDC700350EE3 /* ScriptEngine.cpp */,
-				1A52DB4C205BCDC700350EE3 /* Object.hpp */,
-				1A52DB4D205BCDC700350EE3 /* ScriptEngine.hpp */,
-				1A52DB4E205BCDC700350EE3 /* SeApi.h */,
-				1A52DB4F205BCDC700350EE3 /* Class.cpp */,
-				1A52DB50205BCDC700350EE3 /* Utils.hpp */,
-				1A52DB51205BCDC700350EE3 /* Base.h */,
-			);
-			path = chakracore;
-			sourceTree = "<group>";
-		};
-		1A52DB52205BCDC700350EE3 /* sm */ = {
-			isa = PBXGroup;
-			children = (
-				1A52DB5D205BCDC700350EE3 /* Base.h */,
-				1A52DB5B205BCDC700350EE3 /* Class.cpp */,
-				1A52DB53205BCDC700350EE3 /* Class.hpp */,
-				1A52DB54205BCDC700350EE3 /* HelperMacros.h */,
-				1A52DB56205BCDC700350EE3 /* Object.cpp */,
-				1A52DB58205BCDC700350EE3 /* Object.hpp */,
-				1A52DB57205BCDC700350EE3 /* ScriptEngine.cpp */,
-				1A52DB59205BCDC700350EE3 /* ScriptEngine.hpp */,
-				1A52DB5A205BCDC700350EE3 /* SeApi.h */,
-				1A52DB55205BCDC700350EE3 /* Utils.cpp */,
-				1A52DB5C205BCDC700350EE3 /* Utils.hpp */,
-			);
-			path = sm;
-			sourceTree = "<group>";
-		};
+		};			
 		1A57033E180BD0490088DEC7 /* external */ = {
 			isa = PBXGroup;
 			children = (
@@ -3212,9 +3176,7 @@
 		469301F52046AE05004A3D6C /* jswrapper */ = {
 			isa = PBXGroup;
 			children = (
-				1A52DB46205BCDC700350EE3 /* chakracore */,
 				469302432046AE05004A3D6C /* jsc */,
-				1A52DB52205BCDC700350EE3 /* sm */,
 				4693023E2046AE05004A3D6C /* config.cpp */,
 				469302382046AE05004A3D6C /* config.hpp */,
 				4693022A2046AE05004A3D6C /* HandleObject.cpp */,
@@ -5468,7 +5430,7 @@
 				MACH_O_TYPE = staticlib;
 				OTHER_CFLAGS = "-DCC_NEW_RENDERER";
 				OTHER_LDFLAGS = "-llibsql3";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../external/mac/include $(SRCROOT)/../external/sources $(SRCROOT)/../external/mac/include/freetype $(SRCROOT)/../external/mac/include/spidermonkey $(SRCROOT)/../external/mac/include/chakracore $(SRCROOT)/../external/mac/include/uv $(SRCROOT)/../external/mac/include/v8 $(SRCROOT)/../cocos/editor-support/";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../external/mac/include $(SRCROOT)/../external/sources $(SRCROOT)/../external/mac/include/freetype $(SRCROOT)/../external/mac/include/uv $(SRCROOT)/../external/mac/include/v8 $(SRCROOT)/../cocos/editor-support/";
 			};
 			name = Debug;
 		};
@@ -5498,7 +5460,7 @@
 				);
 				MACH_O_TYPE = staticlib;
 				OTHER_LDFLAGS = "-llibsql3";
-				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../external/mac/include $(SRCROOT)/../external/sources $(SRCROOT)/../external/mac/include/freetype $(SRCROOT)/../external/mac/include/spidermonkey $(SRCROOT)/../external/mac/include/chakracore $(SRCROOT)/../external/mac/include/uv $(SRCROOT)/../external/mac/include/v8 $(SRCROOT)/../cocos/editor-support/";
+				USER_HEADER_SEARCH_PATHS = "$(inherited) $(SRCROOT)/../external/mac/include $(SRCROOT)/../external/sources $(SRCROOT)/../external/mac/include/freetype $(SRCROOT)/../external/mac/include/uv $(SRCROOT)/../external/mac/include/v8 $(SRCROOT)/../cocos/editor-support/";
 			};
 			name = Release;
 		};

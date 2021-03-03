@@ -1450,43 +1450,25 @@ static bool onReceiveNodeEvent(void* node, ScriptingCore::NodeEventType type)
     const char* funcName = nullptr;
     bool ret = false;
 
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-    JSNative func = nullptr;
-#endif
     if (type == ScriptingCore::NodeEventType::ENTER)
     {
         funcName = "onEnter";
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-        func = _SE(Node_onEnter);
-#endif
     }
     else if (type == ScriptingCore::NodeEventType::EXIT)
     {
         funcName = "onExit";
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-        func = _SE(Node_onExit);
-#endif
     }
     else if (type == ScriptingCore::NodeEventType::ENTER_TRANSITION_DID_FINISH)
     {
         funcName = "onEnterTransitionDidFinish";
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-        func = _SE(Node_onEnterTransitionDidFinish);
-#endif
     }
     else if (type == ScriptingCore::NodeEventType::EXIT_TRANSITION_DID_START)
     {
         funcName = "onExitTransitionDidStart";
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-        func = _SE(Node_onExitTransitionDidStart);
-#endif
     }
     else if (type == ScriptingCore::NodeEventType::CLEANUP)
     {
         funcName = "cleanup";
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-        func = _SE(Node_cleanup);
-#endif
     }
     else
     {
@@ -1495,11 +1477,7 @@ static bool onReceiveNodeEvent(void* node, ScriptingCore::NodeEventType type)
 
     se::Value funcVal;
     bool ok = target->getProperty(funcName, &funcVal);
-#if SCRIPT_ENGINE_TYPE == SCRIPT_ENGINE_SM
-    bool isNativeFunc = funcVal.toObject()->_isNativeFunction(func);
-#else
     bool isNativeFunc = funcVal.toObject()->_isNativeFunction();
-#endif
 
     if (ok && !isNativeFunc)
     {
