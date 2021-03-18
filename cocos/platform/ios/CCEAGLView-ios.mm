@@ -183,15 +183,8 @@ namespace
     [super dealloc];
 }
 
-- (void) layoutSubviews
+- (void) layoutSubviewsForce
 {
-    // On some devices with iOS13, `[_context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer]`
-    // will return false if lock screen when running application, which make framebuffer in invalid state.
-    // FIXME: do binding framebuffer in other place?
-    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
-    if (state == UIApplicationStateBackground)
-        return;
-
     glBindFramebuffer(GL_FRAMEBUFFER, _defaultFramebuffer);
     if (_defaultColorBuffer)
     {
@@ -241,6 +234,14 @@ namespace
         NSLog(@"Failed to make complete framebuffer object 0x%X", error);
     
     _isReady = TRUE;
+}
+
+- (void) layoutSubviews
+{
+    UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+    if (state == UIApplicationStateBackground)
+        return;
+    [self layoutSubviewsForce];
 }
 
 - (BOOL) isReady

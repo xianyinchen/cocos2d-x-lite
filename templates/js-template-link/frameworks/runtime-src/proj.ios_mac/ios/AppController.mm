@@ -96,6 +96,12 @@ Application* app = nullptr;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     /*
+     * force rebuild framebuffer
+     */
+    auto glview = (__bridge CCEAGLView *)cocos2d::Application::getInstance()->getView();
+    [glview layoutSubviewsForce];
+
+    /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
     app->onResume();
