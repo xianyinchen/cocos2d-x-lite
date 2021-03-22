@@ -101,7 +101,7 @@ public:
     // This class is useful for internal usage.
     static Application* getInstance() { return _instance; }
     
-    Application(const std::string& name, int width, int height, bool fullscreen);
+    Application(const std::string& name, int width, int height, bool fullscreen = false);
     virtual ~Application();
     
     virtual bool applicationDidFinishLaunching();
