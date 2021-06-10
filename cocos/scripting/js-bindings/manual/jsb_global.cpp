@@ -931,7 +931,7 @@ bool jsb_global_load_image(const std::string& path, const se::Value& callbackVal
                     retObj->setProperty("errorMsg", se::Value(errorMsg));
                     seArgs.push_back(se::Value(retObj));
                 }
-                
+
                 callbackPtr->toObject()->call(seArgs, nullptr);
                 img = nullptr;
                 
