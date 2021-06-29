@@ -110,8 +110,8 @@ void PrintDebuggerReadyMessage(const std::string &host,
 
     {
         char buf[512];
-        uv_interface_address_t *info;
-        int count, i;
+        uv_interface_address_t *info = nullptr;
+        int count = 0, i = 0;
 
         uv_interface_addresses(&info, &count);
         i = count;
