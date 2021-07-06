@@ -51,22 +51,19 @@ void CCMTLQueue::submit(CommandBuffer *const *cmdBuffs, uint count) {
         id<MTLCommandBuffer> mtlCmdBuffer = cmdBuffer->getMTLCommandBuffer();
 
         if (i < count-1) {
-            [mtlCmdBuffer addCompletedHandler:^(id<MTLCommandBuffer> commandBuffer) {
-                [commandBuffer release];
-            }];
         }
         else {
             // Must do present before commit last command buffer.
             CCMTLDevice* device = (CCMTLDevice*)CCMTLDevice::getInstance();
             id<CAMetalDrawable> currDrawable = (id<CAMetalDrawable>)device->getCurrentDrawable();
             [mtlCmdBuffer presentDrawable:currDrawable];
-            [mtlCmdBuffer addCompletedHandler:^(id<MTLCommandBuffer> commandBuffer) {
-                [commandBuffer release];
-                device->onPresentCompleted();
-            }];
             device->disposeCurrentDrawable();
         }
         [mtlCmdBuffer commit];
+        [mtlCmdBuffer waitUntilCompleted];
+        [mtlCmdBuffer release];
+        CCMTLDevice* device = (CCMTLDevice*)CCMTLDevice::getInstance();
+        device->onPresentCompleted();
     }
 }
 

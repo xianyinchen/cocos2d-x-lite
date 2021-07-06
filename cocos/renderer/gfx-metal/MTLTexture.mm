@@ -118,6 +118,7 @@ bool CCMTLTexture::createMTLTexture() {
     id<MTLDevice> mtlDevice = id<MTLDevice>(CCMTLDevice::getInstance()->getMTLDevice());
     _mtlTexture = [mtlDevice newTextureWithDescriptor:descriptor];
 
+    [descriptor release];
     return _mtlTexture != nil;
 }
 

@@ -199,10 +199,6 @@ void CCMTLDevice::doDestroy() {
 //        EventDispatcher::removeCustomEventListener(EVENT_MEMORY_WARNING, _memoryAlarmListenerId);
 //        _memoryAlarmListenerId = 0;
 //    }
-    if (_autoreleasePool) {
-        [(NSAutoreleasePool*)_autoreleasePool drain];
-        _autoreleasePool = nullptr;
-    }
 
     CCMTLGPUGarbageCollectionPool::getInstance()->flush();
 
@@ -247,10 +243,6 @@ void CCMTLDevice::resize(uint w, uint h) {
 void CCMTLDevice::acquire() {
     _inFlightSemaphore->wait();
 
-    if (!_autoreleasePool) {
-        _autoreleasePool = [[NSAutoreleasePool alloc] init];
-//        CC_LOG_INFO("POOL: %p ALLOCED", _autoreleasePool);
-    }
     // Clear queue stats
     CCMTLQueue *queue = static_cast<CCMTLQueue *>(_queue);
     queue->_numDrawCalls = 0;
@@ -267,12 +259,6 @@ void CCMTLDevice::present() {
     //hold this pointer before update _currentFrameIndex
     _currentBufferPoolId = _currentFrameIndex;
     _currentFrameIndex = (_currentFrameIndex + 1) % MAX_FRAMES_IN_FLIGHT;
-
-    if (_autoreleasePool) {
-//        CC_LOG_INFO("POOL: %p RELEASED", _autoreleasePool);
-        [(NSAutoreleasePool*)_autoreleasePool drain];
-        _autoreleasePool = nullptr;
-    }
 }
 
 void CCMTLDevice::onPresentCompleted() {
@@ -289,7 +275,7 @@ void CCMTLDevice::onPresentCompleted() {
 void *CCMTLDevice::getCurrentDrawable() {
     if (!_activeDrawable)    {
         CAMetalLayer *layer = (CAMetalLayer*)getMTLLayer();
-        _activeDrawable = [[layer nextDrawable] retain];
+        _activeDrawable = [layer nextDrawable];
     }
     return _activeDrawable;
 }
