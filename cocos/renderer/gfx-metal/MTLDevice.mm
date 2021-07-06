@@ -270,7 +270,7 @@ void CCMTLDevice::present() {
 
     if (_autoreleasePool) {
 //        CC_LOG_INFO("POOL: %p RELEASED", _autoreleasePool);
-        [(NSAutoreleasePool*)_autoreleasePool drain];
+        [(NSAutoreleasePool*)_autoreleasePool release];
         _autoreleasePool = nullptr;
     }
 }
@@ -289,14 +289,13 @@ void CCMTLDevice::onPresentCompleted() {
 void *CCMTLDevice::getCurrentDrawable() {
     if (!_activeDrawable)    {
         CAMetalLayer *layer = (CAMetalLayer*)getMTLLayer();
-        _activeDrawable = [[layer nextDrawable] retain];
+        _activeDrawable = [layer nextDrawable];
     }
     return _activeDrawable;
 }
 
 void CCMTLDevice::disposeCurrentDrawable() {
     if (_activeDrawable) {
-        [(id<CAMetalDrawable>)_activeDrawable release];
         _activeDrawable = nil;
     }
 }

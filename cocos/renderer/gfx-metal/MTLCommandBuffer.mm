@@ -79,12 +79,12 @@ void CCMTLCommandBuffer::begin(RenderPass *renderPass, uint subpass, Framebuffer
     _isSecondary = renderPass != nullptr && _mtlCommandBuffer;
     if (!_isSecondary) {
         // Only primary command buffer should request command buffer explicitly
-        _mtlCommandBuffer = [[_mtlCommandQueue commandBuffer] retain];
+        _mtlCommandBuffer = [_mtlCommandQueue commandBuffer];
         [_mtlCommandBuffer enqueue];
     } else {
         // Secondary command buffer is likely to be recorded in a separated thread
         if (_autoreleasePool) {
-            [_autoreleasePool drain];
+            [_autoreleasePool release];
             _autoreleasePool = nil;
         }
         _autoreleasePool = [[NSAutoreleasePool alloc] init];
@@ -115,7 +115,7 @@ void CCMTLCommandBuffer::end() {
 
         if (_autoreleasePool) {
             //        CC_LOG_INFO("%d CB POOL: %p RELEASED for %p", [NSThread currentThread], _autoreleasePool, this);
-            [_autoreleasePool drain];
+            [_autoreleasePool release];
             _autoreleasePool = nullptr;
         }
     }
@@ -166,7 +166,7 @@ void CCMTLCommandBuffer::beginRenderPass(RenderPass *renderPass, Framebuffer *fb
     }
 
     if (secondaryCBCount > 0) {
-        _parallelEncoder = [[_mtlCommandBuffer parallelRenderCommandEncoderWithDescriptor:mtlRenderPassDescriptor] retain];
+        _parallelEncoder = [_mtlCommandBuffer parallelRenderCommandEncoderWithDescriptor:mtlRenderPassDescriptor];
         // Create command encoders from parallel encoder and assign to command buffers
         for (uint i = 0u; i < secondaryCBCount; ++i) {
             CCMTLCommandBuffer *cmdBuff = (CCMTLCommandBuffer *)secondaryCBs[i];
@@ -190,7 +190,6 @@ void CCMTLCommandBuffer::beginRenderPass(RenderPass *renderPass, Framebuffer *fb
 void CCMTLCommandBuffer::endRenderPass() {
     if (_parallelEncoder) {
         [_parallelEncoder endEncoding];
-        [_parallelEncoder release];
         _parallelEncoder = nil;
     } else {
         _renderEncoder.endEncoding();
