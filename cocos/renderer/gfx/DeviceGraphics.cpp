@@ -831,7 +831,7 @@ void DeviceGraphics::commitStencilStates()
     if (_currentState->stencilTest != _nextState->stencilTest)
     {
         if (_nextState->stencilTest)
-		{
+        {
             glEnable(GL_STENCIL_TEST);
         }
 
@@ -868,7 +868,7 @@ void DeviceGraphics::commitStencilStates()
         }
 
         if (!_nextState->stencilTest)
-		{
+        {
             glDisable(GL_STENCIL_TEST);
         }
 		
