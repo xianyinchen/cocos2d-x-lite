@@ -25,6 +25,7 @@
 
 #include "MessageQueue.h"
 #include <cassert>
+#include "AutoReleasePool.h"
 
 namespace cc {
 
@@ -254,6 +255,7 @@ Message *MessageQueue::readMessage() noexcept {
 
 void MessageQueue::consumerThreadLoop() noexcept {
     while (!_reader.terminateConsumerThread) {
+        AutoReleasePool autoReleasePool;
         flushMessages();
     }
 

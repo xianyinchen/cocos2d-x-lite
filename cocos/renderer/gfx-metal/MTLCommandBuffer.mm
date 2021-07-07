@@ -56,10 +56,6 @@ void CCMTLCommandBuffer::doInit(const CommandBufferInfo &info) {
 }
 
 void CCMTLCommandBuffer::doDestroy() {
-    if (_autoreleasePool) {
-        [_autoreleasePool release];
-        _autoreleasePool = nullptr;
-    }
 }
 
 bool CCMTLCommandBuffer::isRenderingEntireDrawable(const Rect &rect, const CCMTLRenderPass *renderPass) {
@@ -81,15 +77,8 @@ void CCMTLCommandBuffer::begin(RenderPass *renderPass, uint subpass, Framebuffer
         // Only primary command buffer should request command buffer explicitly
         _mtlCommandBuffer = [[_mtlCommandQueue commandBuffer] retain];
         [_mtlCommandBuffer enqueue];
-    } else {
-        // Secondary command buffer is likely to be recorded in a separated thread
-        if (_autoreleasePool) {
-            [_autoreleasePool drain];
-            _autoreleasePool = nil;
-        }
-        _autoreleasePool = [[NSAutoreleasePool alloc] init];
-        //    CC_LOG_INFO("%d CB POOL: %p ALLOCED for %p", [NSThread currentThread], _autoreleasePool, this);
     }
+
     _numTriangles = 0;
     _numDrawCalls = 0;
     _numInstances = 0;
@@ -112,12 +101,6 @@ void CCMTLCommandBuffer::end() {
     if (_isSecondary) {
         // Secondary command buffer should end encoding here
         _renderEncoder.endEncoding();
-
-        if (_autoreleasePool) {
-            //        CC_LOG_INFO("%d CB POOL: %p RELEASED for %p", [NSThread currentThread], _autoreleasePool, this);
-            [_autoreleasePool drain];
-            _autoreleasePool = nullptr;
-        }
     }
 }
 
