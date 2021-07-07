@@ -45,7 +45,7 @@ public:
     CCMTLComputeCommandEncoder &operator=(CCMTLComputeCommandEncoder &&) = delete;
 
     void initialize(id<MTLCommandBuffer> commandBuffer) {
-        _mtlEncoder  = [[commandBuffer computeCommandEncoder] retain];
+        _mtlEncoder  = [commandBuffer computeCommandEncoder];
         _initialized = true;
     }
 
@@ -85,7 +85,6 @@ public:
 
     CC_INLINE void endEncoding() {
         [_mtlEncoder endEncoding];
-        [_mtlEncoder release];
         _mtlEncoder  = nil;
         _pipelineState = nil;
         _initialized = false;
