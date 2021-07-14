@@ -289,13 +289,16 @@ void CCMTLDevice::onPresentCompleted() {
 void *CCMTLDevice::getCurrentDrawable() {
     if (!_activeDrawable)    {
         CAMetalLayer *layer = (CAMetalLayer*)getMTLLayer();
-        _activeDrawable = [layer nextDrawable];
+        _activeDrawable = [[layer nextDrawable] retain];
     }
     return _activeDrawable;
 }
 
 void CCMTLDevice::disposeCurrentDrawable() {
-    _activeDrawable = nil;
+    if (_activeDrawable) {
+        [(id<CAMetalDrawable>)_activeDrawable release];
+        _activeDrawable = nil;
+    }
 }
 
 Queue *CCMTLDevice::createQueue() {

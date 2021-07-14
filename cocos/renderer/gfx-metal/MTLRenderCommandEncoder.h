@@ -55,11 +55,11 @@ public:
     CCMTLRenderCommandEncoder &operator=(CCMTLRenderCommandEncoder &&) = delete;
 
     void initialize(id<MTLCommandBuffer> commandBuffer, MTLRenderPassDescriptor *descriptor) {
-        _mtlEncoder = [commandBuffer renderCommandEncoderWithDescriptor:descriptor];
+        _mtlEncoder = [[commandBuffer renderCommandEncoderWithDescriptor:descriptor] retain];
         clearStates();
     }
     void initialize(id<MTLParallelRenderCommandEncoder> parallelEncoder) {
-        _mtlEncoder = [parallelEncoder renderCommandEncoder];
+        _mtlEncoder = [[parallelEncoder renderCommandEncoder] retain];
         clearStates();
     }
 
@@ -267,6 +267,7 @@ public:
 
     CC_INLINE void endEncoding() {
         [_mtlEncoder endEncoding];
+        [_mtlEncoder release];
         _mtlEncoder = nil;
     }
 

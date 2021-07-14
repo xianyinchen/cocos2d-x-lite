@@ -75,7 +75,7 @@ void CCMTLCommandBuffer::begin(RenderPass *renderPass, uint subpass, Framebuffer
     _isSecondary = renderPass != nullptr && _mtlCommandBuffer;
     if (!_isSecondary) {
         // Only primary command buffer should request command buffer explicitly
-        _mtlCommandBuffer = [_mtlCommandQueue commandBuffer];
+        _mtlCommandBuffer = [[_mtlCommandQueue commandBuffer] retain];
         [_mtlCommandBuffer enqueue];
     }
 
@@ -149,7 +149,7 @@ void CCMTLCommandBuffer::beginRenderPass(RenderPass *renderPass, Framebuffer *fb
     }
 
     if (secondaryCBCount > 0) {
-        _parallelEncoder = [_mtlCommandBuffer parallelRenderCommandEncoderWithDescriptor:mtlRenderPassDescriptor];
+        _parallelEncoder = [[_mtlCommandBuffer parallelRenderCommandEncoderWithDescriptor:mtlRenderPassDescriptor] retain];
         // Create command encoders from parallel encoder and assign to command buffers
         for (uint i = 0u; i < secondaryCBCount; ++i) {
             CCMTLCommandBuffer *cmdBuff = (CCMTLCommandBuffer *)secondaryCBs[i];
@@ -173,6 +173,7 @@ void CCMTLCommandBuffer::beginRenderPass(RenderPass *renderPass, Framebuffer *fb
 void CCMTLCommandBuffer::endRenderPass() {
     if (_parallelEncoder) {
         [_parallelEncoder endEncoding];
+        [_parallelEncoder release];
         _parallelEncoder = nil;
     } else {
         _renderEncoder.endEncoding();
