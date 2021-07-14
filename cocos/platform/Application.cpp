@@ -92,7 +92,7 @@ void Application::tick() {
     _scheduler->update(dt);
     cc::EventDispatcher::dispatchTickEvent(dt);
 
-    AutoreleasePool *currentPool = PoolManager::getInstance()->getCurrentPool();
+    LegacyAutoreleasePool *currentPool = PoolManager::getInstance()->getCurrentPool();
     if (currentPool) {
         currentPool->clear();
     }
